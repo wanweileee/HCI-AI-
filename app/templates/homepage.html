@@ -3,9 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask App</title>
+    <title>My Flask App</title>
+    <style>
+        /* Navbar styling */
+        .navbar {
+            position: fixed; /* Make navbar fixed to the bottom */
+            bottom: 0; /* Align to bottom */
+            width: 100%; /* Full width */
+            background-color: #333; /* Dark background color */
+            overflow: hidden; /* Hide overflow */
+            font-family: Arial, sans-serif; /* Font style for the navbar */
+            display: flex; /* Use flexbox for evenly spacing */
+            justify-content: space-around; /* Even spacing around items */
+        }
+
+        /* Navbar links */
+        .navbar a {
+            float: none; /* Remove float for flex items */
+            display: block;
+            color: white; /* Text color */
+            text-align: center;
+            padding: 14px 6px; /* Adjust padding */
+            text-decoration: none; /* No underline on links */
+            flex-grow: 1; /* Grow links to take up equal space */
+        }
+
+        /* Change color on hover and focus for better accessibility */
+        .navbar a:hover, .navbar a:focus {
+            background-color: #ddd; /* Light background on hover */
+            color: black; /* Text color change on hover */
+        }
+
+        /* Ensure the content does not sit under the navbar */
+        body {
+            padding-bottom: 50px; /* Add padding at the bottom of the page */
+        }
+    </style>
 </head>
 <body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/contact">Contact</a>
+    </div>
+
     <h1>Welcome to My Flask App!</h1>
+    <p>This is a basic Flask application with a navigation bar optimized for mobile.</p>
 </body>
 </html>
