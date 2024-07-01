@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Flask App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Basic reset and full height layout */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        /* Navbar styling */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 0;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+        /* Navbar items styling */
+        .navbar a.nav-item {
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 10px;
+            flex-grow: 1; /* Ensures equal spacing */
+            transition: color 0.3s; /* Smooth transition for hover effects */
+        }
+        /* Larger middle button */
+        .navbar a.nav-main {
+            background-color: purple;
+            padding: 15px 25px; /* Adjust padding for better circle shape */
+            border-radius: 50%; /* Perfect circle */
+            transform: translateY(-15%); /* Raise the button */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Subtle shadow for 3D effect */
+            position: relative; /* Ensures it stays above other elements */
+            z-index: 5; /* Higher index to avoid overlap */
+        }
+        /* Icon sizing for clarity and ease of click */
+        .navbar i {
+            font-size: 20px; /* Ensures icons are not too large/small */
+            vertical-align: middle; /* Aligns icons vertically */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-item"><i class="fa fa-home"></i></a>
+        <a href="/scan" class="nav-item"><i class="fa fa-chart-bar"></i></a>
+        <a href="/add" class="nav-item nav-main"><i class="fa fa-plus"></i></a>
+        <a href="/goals" class="nav-item"><i class="fa fa-bell"></i></a>
+        <a href="/settings" class="nav-item"><i class="fa fa-cog"></i></a>
+    </div>
+</body>
+</html>
+{% block content %}
+{% endblock %}
