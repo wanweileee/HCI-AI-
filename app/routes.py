@@ -29,3 +29,7 @@ def login():
 @main.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@main.route('/monthly')
+def monthly():
+    return render_template('monthly.html')

@@ -6,16 +6,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Analysis</title>
+    <title>Monthly Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Spendings</h1>
-            <h2>Weekly Analysis</h2>
+            <h2>Monthly Analysis</h2>
             <div class="dropdowns">
-                <select id="monthSelector" class="dropdown">
+                <select id="monthSelector" class="dropdown" onchange="navigateToView()">
                     <option value="january">Jan</option>
                     <option value="february">Feb</option>
                     <option value="march">Mar</option>
@@ -24,13 +24,13 @@
                     <option value="june">Jun</option>
                 </select>
                 <select id="viewSelector" class="dropdown" onchange="navigateToView()">
-                    <option value="weekly">Week</option>
                     <option value="monthly">Month</option>
+                    <option value="weekly">Week</option>
                 </select>
             </div>
         </header>
 
-        <!-- Your weekly analysis content here -->
+        <!-- Your monthly analysis content here -->
 
     </div>
 
