@@ -16,6 +16,10 @@
             <h1>Spendings</h1>
             <h2>Monthly Analysis</h2>
             <div class="dropdowns">
+                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
+                    <option value="monthly">Month</option>
+                    <option value="weekly">Week</option>
+                </select>
                 <select id="monthSelector" class="dropdown" onchange="navigateToView()">
                     <option value="january">Jan</option>
                     <option value="february">Feb</option>
@@ -23,10 +27,6 @@
                     <option value="april">Apr</option>
                     <option value="may">May</option>
                     <option value="june">Jun</option>
-                </select>
-                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
-                    <option value="monthly">Month</option>
-                    <option value="weekly">Week</option>
                 </select>
             </div>
         </header>
@@ -40,6 +40,68 @@
             <canvas id="spendingsChart"></canvas>
         </div>
 
+        <div class="money-summary">
+            <div class="money-entry">
+                <span class="money-label">Money In</span>
+                <span class="money-value">+ $2000</span>
+            </div>
+            <div class="money-entry">
+                <span class="money-label">Money Out</span>
+                <span class="money-out">- $3000</span>
+            </div>
+        </div>
+
+        <div class="spending-categories">
+            <div class="category">
+                <label>Food</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressFood" style="width: 50%;"></div>
+                </div>
+                <div class="category-details" id="detailsFood">$150/$300</div>
+                <button onclick="openModal('Food', 300, 'Food')">✎</button>
+            </div>
+
+            <div class="category">
+                <label>Clothing</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressFood" style="width: 80%;"></div>
+                </div>
+                <div class="category-details" id="detailsFood">$80/$100</div>
+                <button onclick="openModal('Clothing', 100, 'Food')">✎</button>
+            </div>
+
+            <div class="category">
+                <label>Bills</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressFood" style="width: 75%;"></div>
+                </div>
+                <div class="category-details" id="detailsFood">$300/$400</div>
+                <button onclick="openModal('Food', 400, 'Food')">✎</button>
+            </div>
+            <!-- Repeat blocks for other categories -->
+        
+            <!-- Modal for editing category details -->
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 class="modal-title">Change Category Name and Limit</h2>
+                    <form id="editForm" onsubmit="submitForm(event)">
+                        <div class="form-group">
+                            <label for="categoryName">Name:</label>
+                            <input type="text" id="categoryName" name="categoryName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryLimit">Limit:</label>
+                            <input type="number" id="categoryLimit" name="categoryLimit" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="submit-button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>  
     </div>
 
     <script>
