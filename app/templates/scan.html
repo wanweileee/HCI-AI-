@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-<header>
-    <h1>Scan</h1>
-</header>
-
+<h2>Upload a Receipt</h2>
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" accept="image/*" required>
+    <button type="submit">Upload and Scan</button>
+</form>
 {% endblock %}
