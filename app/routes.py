@@ -6,7 +6,7 @@ from transformers import pipeline
 
 classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\banan\OneDrive\Desktop\ocr\tesseract.exe'  # Adjust the path if needed
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\banan\OneDrive\Documents\GitHub\HCI-AI-\tesseract.exe'  # Adjust the path if needed
 
 main = Blueprint('main', __name__)
 
