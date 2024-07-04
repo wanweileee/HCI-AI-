@@ -7,7 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monthly Analysis</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='monthly.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -31,6 +32,13 @@
         </header>
 
         <!-- Your monthly analysis content here -->
+        <div class="spendings-info">
+            <div class="current-spending">Total spending:</br>$1000</div>
+            <div class="avg-spending">Avg/Week:</br> $250</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="spendingsChart"></canvas>
+        </div>
 
     </div>
 
@@ -45,6 +53,8 @@
             }
         }
     </script>
+
+<script src="{{ url_for('static', filename='monthly.js') }}"></script>
 </body>
 </html>
 
