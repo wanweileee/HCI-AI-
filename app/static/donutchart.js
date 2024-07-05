@@ -5,12 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('expense-form');
     const categoryInput = document.getElementById('new-category');
     const amountInput = document.getElementById('amount');
-    const progressCircle = document.getElementById('progress-circle');
+    const progressDonut = document.getElementById('progress-donut');
     const budget = 150;
     let expenses = {
         Food: 69.32,
-        Entertainment: 45.00,
-        Utilities: 36.00,
+        Clothing: 45.00,
+        Entertainment: 21.00,
+        Miscellaneous: 15.00
     };
 
     const updateChart = () => {
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 segment.classList.add('segment');
                 segment.setAttribute('data-category', category);
                 segment.style.setProperty('--color', getRandomColor());
-                progressCircle.appendChild(segment);
+                progressDonut.appendChild(segment);
                 // Add click event to the new segment
                 segment.addEventListener('click', () => {
                     updateDetails(category);

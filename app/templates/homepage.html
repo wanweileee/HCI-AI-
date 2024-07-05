@@ -1,82 +1,74 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const segments = document.querySelectorAll('.segment');
-    const textElement = document.querySelector('.inside-circle .text');
-    const detailsElement = document.querySelector('.inside-circle .details');
-    const form = document.getElementById('expense-form');
-    const categoryInput = document.getElementById('new-category');
-    const amountInput = document.getElementById('amount');
-    const progressDonut = document.getElementById('progress-donut');
-    const budget = 150;
-    let expenses = {
-        Food: 69.32,
-        Clothing: 45.00,
-        Entertainment: 21.00,
-        Miscellaneous: 15.00
-    };
+{% extends "base.html" %}
 
-    const updateChart = () => {
-        Object.keys(expenses).forEach(category => {
-            let segment = document.querySelector(`.segment[data-category="${category}"]`);
-            if (!segment) {
-                // Create a new segment if it doesn't exist
-                segment = document.createElement('div');
-                segment.classList.add('segment');
-                segment.setAttribute('data-category', category);
-                segment.style.setProperty('--color', getRandomColor());
-                progressDonut.appendChild(segment);
-                // Add click event to the new segment
-                segment.addEventListener('click', () => {
-                    updateDetails(category);
-                    segments.forEach(s => s.classList.remove('active'));
-                    segment.classList.add('active');
-                });
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Spendings</h1>
+            <h2>Weekly Analysis</h2>
+            <div class="dropdowns">
+                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
+                    <option value="weekly">Week</option>
+                    <option value="monthly">Month</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Your weekly analysis content here -->
+        <div class="spendings-info">
+            <div class="current-spending">Total spending:</br>$120.96</div>
+            <div class="avg-spending">Avg/Day:</br> $20.30</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="spendingsChart"></canvas>
+        </div>
+
+        <div class="spendings-donut">
+            <canvas id="spendingsDonut"></canvas>
+        </div>
+
+        <div class="weekly-spendings">
+            <h3>Check what you spent on!</h3>
+            <div class="progress-donut" id="progress-donut">
+                <div class="segment food" data-category="Food" style="--percentage: 46; --color: #FFD700;"></div>
+                <div class=" segment clothing" data-category="Clothing" style="--percentage: 30; --color: #FF6984;"></div>
+                <div class=" segment entertainment" data-category="Entertainment" style="--percentage: 14; --color: #87CEFA;"></div>
+                <div class=" segment miscellaneous" data-category="Miscellaneous" style="--percentage: 10; --color: #B0F1BE;"></div>
+                <div class="inside-circle">
+                    <div class="text">Click a segment</div>
+                    <div class="details"></div>
+                </div>      
+            </div>
+        </div>
+
+
+        </div>
+
+    <script>
+        function navigateToView() {
+            const viewSelector = document.getElementById('viewSelector');
+            const selectedValue = viewSelector.value;
+            if (selectedValue === 'weekly') {
+                window.location.href = '/';
+            } else if (selectedValue === 'monthly') {
+                window.location.href = '/monthly';
             }
-            const percentage = (expenses[category] / budget) * 100;
-            segment.style.setProperty('--percentage', percentage);
-        });
-    };
-
-    const updateDetails = (category) => {
-        const amountSpent = expenses[category];
-        const percentage = (amountSpent / budget) * 100;
-        textElement.textContent = category;
-        detailsElement.textContent = `$${amountSpent.toFixed(2)}/$${budget} (${percentage.toFixed(1)}%)`;
-    };
-
-    segments.forEach(segment => {
-        segment.addEventListener('click', () => {
-            const category = segment.getAttribute('data-category');
-            updateDetails(category);
-            segments.forEach(s => s.classList.remove('active'));
-            segment.classList.add('active');
-        });
-    });
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const category = categoryInput.value.trim();
-        const amount = parseFloat(amountInput.value);
-        if (category && !isNaN(amount) && amount > 0) {
-            if (!expenses[category]) {
-                expenses[category] = 0;
-            }
-            expenses[category] += amount;
-            updateChart();
-            updateDetails(category);
-            categoryInput.value = '';
-            amountInput.value = '';
-            closeModal();
         }
-    });
+    </script>
+    <script src="donutchart.js"></script>
+<script src="{{ url_for('static', filename='weekly.js') }}"></script>
+</body>
+</html>
 
-    const getRandomColor = () => {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    };
 
-    updateChart();
-});
+
+{% endblock %}

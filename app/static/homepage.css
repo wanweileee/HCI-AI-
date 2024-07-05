@@ -8,32 +8,34 @@ body {
 
 .container {
     padding: 20px;
-    position: relative; /* Added this for positioning children */
+    position: relative;
 }
 
-.spendings-info{
+.spendings-info {
     display: flex;
     justify-content: space-between;
     width: 100%;
     margin-bottom: 20px;
 }
 
-.current-spending{
+.current-spending {
     font-size: 1.3em;
-    color:aquamarine;
+    color: aquamarine;
 }
-.avg-spending{
+
+.avg-spending {
     font-size: 1.3em;
 }
 
-.chart-container{
-    width:100%;
+.chart-container {
+    width: 100%;
     max-width: 600px;
     height: 170px;
+    margin-bottom: 20px;
 }
 
-canvas{
-    width:100%;
+canvas {
+    width: 100%;
     max-width: 100%;
 }
 
@@ -42,7 +44,7 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    position: relative; /* Added this for positioning children */
+    position: relative;
 }
 
 header h1 {
@@ -52,9 +54,9 @@ header h1 {
 .dropdowns {
     display: flex;
     gap: 10px;
-    position: absolute; /* Added this for absolute positioning */
-    right: 0; /* Align to the right */
-    top: 0; /* Align to the top */
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .dropdown {
@@ -71,7 +73,6 @@ header h1 {
     box-shadow: 0 0 5px #aaa;
 }
 
-/* Additional styling for the weekly and monthly views */
 .analysis-content {
     margin-top: 20px;
 }
@@ -105,6 +106,81 @@ header h1 {
     border-bottom: 1px solid #444;
 }
 
+.progress-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.segment {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    clip: rect(0px, 150px, 150px, 75px);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.segment::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color);
+    transform: rotate(calc(var(--percentage) * 3.6deg));
+    transform-origin: 75px 75px;
+    border-radius: 50%;
+}
+
+.segment:hover {
+    transform: scale(1.1);
+}
+
+.inside-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #333;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.text {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.details {
+    font-size: 14px;
+    text-align: center;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin: 5px 0;
+}
+
+input, select {
+    padding: 5px;
+    margin: 5px 0;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header {
@@ -114,14 +190,14 @@ header h1 {
     }
 
     .dropdowns {
-        position: absolute; /* Keep absolute positioning */
-        right: 0; /* Align to the right */
-        top: 0; /* Align to the top */
+        position: absolute;
+        right: 0;
+        top: 0;
         flex-direction: column;
     }
 
     .dropdown {
-        width: auto; /* Allow dropdowns to size based on content */
+        width: auto;
     }
 
     .chart {
@@ -149,13 +225,13 @@ header h1 {
     }
 
     .dropdown {
-        width: auto; /* Allow dropdowns to size based on content */
+        width: auto;
     }
 
     .dropdowns {
-        position: absolute; /* Keep absolute positioning */
-        right: 0; /* Align to the right */
-        top: 0; /* Align to the top */
+        position: absolute;
+        right: 0;
+        top: 0;
         flex-direction: column;
         gap: 10px;
     }
