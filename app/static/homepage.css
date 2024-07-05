@@ -11,6 +11,32 @@ body {
     position: relative; /* Added this for positioning children */
 }
 
+.spendings-info{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.current-spending{
+    font-size: 1.3em;
+    color:aquamarine;
+}
+.avg-spending{
+    font-size: 1.3em;
+}
+
+.chart-container{
+    width:100%;
+    max-width: 600px;
+    height: 170px;
+}
+
+canvas{
+    width:100%;
+    max-width: 100%;
+}
+
 header {
     display: flex;
     justify-content: space-between;

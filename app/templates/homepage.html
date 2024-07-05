@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -23,6 +24,13 @@
         </header>
 
         <!-- Your weekly analysis content here -->
+        <div class="spendings-info">
+            <div class="current-spending">Total spending:</br>$120.96</div>
+            <div class="avg-spending">Avg/Day:</br> $20.30</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="spendingsChart"></canvas>
+        </div>
 
     </div>
 
@@ -37,6 +45,8 @@
             }
         }
     </script>
+
+<script src="{{ url_for('static', filename='weekly.js') }}"></script>
 </body>
 </html>
 
