@@ -1,12 +1,26 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Scan Result</h2>
-<p>Recognized Text:</p>
-<pre>{{ text }}</pre>
-<h3>Categorized Expenses:</h3>
-<ul>
-    <li>Food: {{ categories.Food }}</li>
-    <li>Transport: {{ categories.Transport }}</li>
-    <li>Others: {{ categories.Others }}</li>
-</ul>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='scan_results.css') }}">
+</head>
+
+<div class="container">
+    <h2>Scan Result</h2>
+    <p>Recognized Text:</p>
+    <pre>{{ text }}</pre>
+    <h3>Categorized Expenses:</h3>
+    <ul>
+        <li>Food: {{ categories.Food }}</li>
+        <li>Transport: {{ categories.Transport }}</li>
+        <li>Entertainment: {{ categories.Entertainment }}</li>
+        <li>Shopping: {{ categories.Shopping }}</li>
+        <li>Groceries: {{ categories.Groceries }}</li>
+        <li>Others: {{ categories.Others }}</li>
+    </ul>
+</div>
 {% endblock %}
+

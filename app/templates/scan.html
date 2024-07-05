@@ -1,8 +1,18 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Upload a Receipt</h2>
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" accept="image/*" required>
-    <button type="submit">Upload and Scan</button>
-</form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Website Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='scan.css') }}">
+</head>
+
+<div class="container">
+    <h2>Upload a Receipt</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Upload and Scan</button>
+    </form>
+</div>
 {% endblock %}

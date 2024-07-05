@@ -54,8 +54,8 @@ def scan():
     return render_template('scan.html')
 
 def categorize_expenses(text):
-    categories = {'Food': [], 'Transport': [], 'Others': []}
-    candidate_labels = ['Food', 'Transport', 'Others']
+    categories = {'Food': [], 'Transport': [], 'Entertainment':[],'Others': []}
+    candidate_labels = ['Food', 'Transport','Entertainment','Shopping' ,'Groceries','Others']
     lines = text.split('\n')
     for line in lines:
         line = line.strip()  # Remove any leading/trailing whitespace
@@ -68,3 +68,4 @@ def categorize_expenses(text):
                 print(f"Error processing line: {line}. Error: {e}")
                 categories['Others'].append(line)
     return categories
+
