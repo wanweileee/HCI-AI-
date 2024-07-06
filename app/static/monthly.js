@@ -1,4 +1,11 @@
+function getTotalSpending() {
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    return transactions.reduce((total, transaction) => total + transaction.amount, 0);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    const totalSpending = getTotalSpending(); // Ensure this is called here
+
     const ctx = document.getElementById('spendingsChart').getContext('2d');
     const spendingsChart = new Chart(ctx, {
         type: 'bar',
@@ -6,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
                 label: 'Spendings',
-                data: [800, 900, 1200, 1100, 1200, 450],
+                data: [800, 900, 1200, 1100, 1200, 450 + totalSpending],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -37,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
 
 function openModal(categoryName, categoryLimit, categoryId) {
     document.getElementById('categoryName').value = categoryName;
@@ -143,4 +151,10 @@ function createCategoryBar(category, amount) {
     container.appendChild(newCategory);
 }
 
+/*
+// Clears all local storage
+localStorage.clear();
 
+// Clear a specific item in local storage
+localStorage.removeItem('keyName'); // Replace 'keyName' with the key you want to remove
+*/
