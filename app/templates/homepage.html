@@ -8,7 +8,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekly Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <style>
+        .chart-container {
+            width: 100%; /* Adjust the width as needed */
+            height: 400px; /* Adjust the height as needed */
+            
+        }
+
+        .spendings-donut {
+            width: 50%; /* Adjust the width as needed */
+            height: 400px; /* Adjust the height as needed */
+        }
+
+        .spendings-donut canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -33,25 +53,10 @@
         </div>
 
         <div class="spendings-donut">
-            <canvas id="spendingsDonut"></canvas>
+            <h3>Check on what you spent on!</h3>
+            <canvas id="donut"></canvas>
         </div>
-
-        <div class="weekly-spendings">
-            <h3>Check what you spent on!</h3>
-            <div class="progress-donut" id="progress-donut">
-                <div class="segment food" data-category="Food" style="--percentage: 46; --color: #FFD700;"></div>
-                <div class=" segment clothing" data-category="Clothing" style="--percentage: 30; --color: #FF6984;"></div>
-                <div class=" segment entertainment" data-category="Entertainment" style="--percentage: 14; --color: #87CEFA;"></div>
-                <div class=" segment miscellaneous" data-category="Miscellaneous" style="--percentage: 10; --color: #B0F1BE;"></div>
-                <div class="inside-circle">
-                    <div class="text">Click a segment</div>
-                    <div class="details"></div>
-                </div>      
-            </div>
-        </div>
-
-
-        </div>
+    </div>
 
     <script>
         function navigateToView() {
@@ -64,11 +69,11 @@
             }
         }
     </script>
-    <script src="donutchart.js"></script>
+
 <script src="{{ url_for('static', filename='weekly.js') }}"></script>
+<script src="{{ url_for('static', filename='donutchart.js') }}"></script>
+
 </body>
 </html>
-
-
 
 {% endblock %}
