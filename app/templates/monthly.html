@@ -147,16 +147,25 @@
     function updateCategory(category, amount) {
         let details = document.getElementById(`details${category}`);
         let progressBar = document.getElementById(`progress${category}`);
-    
+
         if (details && progressBar) {
-            let limit = parseFloat(details.textContent.split('/')[1].slice(1));
-            details.textContent = `$${amount}/$${limit}`;
-            let spendPercentage = (amount / limit) * 100;
-            progressBar.style.width = `${spendPercentage}%`;
+            // Extract current spending and limit from the details element
+            let currentDetails = details.textContent.split('/'); // E.g., "$150/$300"
+            let currentSpend = parseFloat(currentDetails[0].slice(1)); // Removes the '$' and converts to float
+            let limit = parseFloat(currentDetails[1].slice(1)); // Removes the '$' and converts to float
+
+            let newSpend = currentSpend + amount; // Add the new amount to the current spend
+            details.textContent = `$${newSpend}/$${limit}`; // Update the text content with the new spend
+
+            // Calculate new percentage for the progress bar
+            let spendPercentage = Math.min((newSpend / limit) * 100, 100); // Ensure it does not exceed 100%
+            progressBar.style.width = `${spendPercentage}%`; // Update the width of the progress bar
         } else {
+            // If the category does not exist, create a new category bar
             createCategoryBar(category, amount);
         }
     }
+
     
     function createCategoryBar(category, amount) {
         let container = document.querySelector('.spending-categories');

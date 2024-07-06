@@ -50,6 +50,7 @@ function submitTransaction(event) {
 
     localStorage.setItem('transactions', JSON.stringify(transactions));
 
+
     document.getElementById('transactionForm').reset();
     // Hide the custom category input again
     document.getElementById('customCategory').style.display = 'none';
