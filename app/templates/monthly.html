@@ -62,15 +62,6 @@
             </div>
             
             <div class="category">
-                <label id="labelClothing">Clothing</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressClothing" style="width: 80%;"></div>
-                </div>
-                <div class="category-details" id="detailsClothing">$80/$100</div>
-                <button onclick="openModal('Clothing', '100', 'Clothing')">✎</button>
-            </div>
-            
-            <div class="category">
                 <label id="labelBills">Bills</label>
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
@@ -102,6 +93,11 @@
             </div>
 
         </div>  
+
+        <a href="/add" class="add-transaction-button" aria-label="Add Transaction">
+            <i>+</i>
+        </a>
+        
     </div>
 
     <script>
@@ -117,9 +113,71 @@
     </script>
 
 <script src="{{ url_for('static', filename='monthly.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUI();
+    });
+    
+    function updateUI() {
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let totalSpending = 0;
+        let categories = {};
+    
+        // Aggregate transactions into categories and total spending
+        transactions.forEach(tx => {
+            totalSpending += tx.amount;
+            if (categories[tx.category]) {
+                categories[tx.category] += tx.amount;
+            } else {
+                categories[tx.category] = tx.amount;
+            }
+        });
+    
+        // Update total spending and money out
+        document.querySelector('.current-spending').innerHTML = `Total spending:<br>$${totalSpending}`;
+        document.querySelector('.money-out').textContent = ` -$${totalSpending}`;
+    
+        // Update categories
+        for (let category in categories) {
+            updateCategory(category, categories[category]);
+        }
+    }
+    
+    function updateCategory(category, amount) {
+        let details = document.getElementById(`details${category}`);
+        let progressBar = document.getElementById(`progress${category}`);
+    
+        if (details && progressBar) {
+            let limit = parseFloat(details.textContent.split('/')[1].slice(1));
+            details.textContent = `$${amount}/$${limit}`;
+            let spendPercentage = (amount / limit) * 100;
+            progressBar.style.width = `${spendPercentage}%`;
+        } else {
+            createCategoryBar(category, amount);
+        }
+    }
+    
+    function createCategoryBar(category, amount) {
+        let container = document.querySelector('.spending-categories');
+        let newCategory = document.createElement('div');
+        newCategory.className = 'category';
+        newCategory.innerHTML = `
+            <label id="label${category}">${category}</label>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress${category}" style="width: 50%;"></div>
+            </div>
+            <div class="category-details" id="details${category}">$${amount}/$300</div>
+            <button onclick="openModal('${category}', '300', '${category}')">✎</button>
+        `;
+        container.appendChild(newCategory);
+    }
+    </script>
+    
 </body>
 </html>
 
 
 
 {% endblock %}
+
