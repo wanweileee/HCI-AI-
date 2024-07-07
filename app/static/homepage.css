@@ -9,7 +9,7 @@ body {
 .container {
     padding: 20px;
     padding-bottom: 80px; /* Ensure this is greater than the height of the navbar */
-    position: relative; /* Added this for positioning children */
+    position: relative; /* Added this for positioning children */ 
 }
 
 .spendings-info{
@@ -28,16 +28,16 @@ body {
 }
 
 .chart-container{
-    width:100%;
+    width: 100%;
     max-width: 600px;
-    height: 170px;
-    z-index: 1;
+    height: 400px; /* Adjust height as needed */
+    margin: 0 auto; /* Center the chart */
     overflow: auto;
 }
 
 canvas{
-    width:100%;
-    max-width: 100%;
+    width: 100%;
+    height: 100%; /* Ensure canvas takes the full size of its container */
 }
 
 header {
@@ -81,7 +81,6 @@ header h1 {
 
 .chart, .budget-info, .transactions {
     margin-bottom: 20px;
-    align-items: center;
 }
 
 .chart {
@@ -165,20 +164,30 @@ header h1 {
     }
 }
 
-.spendings-donut{
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.spendings-donut canvas{
+.spendings-donut-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 70%;
-    height: 50px;
+    flex-direction: column;
+    width: 100%;
     margin: 0 auto;
-    overflow: hidden;
+}
+
+.spendings-donut {
+    width: 100%;
+    max-width: 600px;
+    position: relative; /* Add this to position text inside */
+    margin: 0 auto; /* Center the donut container */
+}
+
+.spendings-donut h3 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.spendings-donut canvas {
+    width: 100% !important;
+    height: 400px !important; /* Adjust the height as needed */
 }
 
 /* Navbar styling */

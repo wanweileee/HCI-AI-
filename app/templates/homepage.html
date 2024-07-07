@@ -10,13 +10,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
+    
     <style>
         .chart-container {
             width: 100%; /* Adjust the width as needed */
             height: 400px; /* Adjust the height as needed */
-            
+
         }
 
         .spendings-donut {
@@ -52,8 +51,8 @@
             <canvas id="spendingsChart"></canvas>
         </div>
 
+        <h2>Check on what you spent on!</h2>
         <div class="spendings-donut">
-            <h3>Check on what you spent on!</h3>
             <canvas id="donut"></canvas>
         </div>
     </div>
