@@ -2,70 +2,74 @@
 const centerTextPlugin = {
     id: 'centerText',
     beforeDraw: function(chart) {
-        // Check if the center text configuration exists and the chart is ready
         const centerConfig = chart.config.options.plugins.centerText;
         if (centerConfig && chart.chartArea) {
-            // Get ctx from string
-            var ctx = chart.ctx;
+            const ctx = chart.ctx;
 
-            var fontStyle = centerConfig.fontStyle || 'Arial';
-            var txt = centerConfig.text || '';
-            var color = centerConfig.color || '#000';
-            var sidePadding = centerConfig.sidePadding || 20;
-            var sidePaddingCalculated = (sidePadding / 100) * (chart.innerRadius * 2);
-            // Start with a base font of 30px
-            ctx.font = "30px " + fontStyle;
+            const fontStyle = centerConfig.fontStyle || 'Arial';
+            const txt = centerConfig.text || '';
+            const colour = centerConfig.colour || '#000';
 
-            // Get the width of the string and also the width of the element
-            var stringWidth = ctx.measureText(txt).width;
-            var elementWidth = (chart.innerRadius * 2) - sidePaddingCalculated;
+            // Split the text into two lines
+            const lines = txt.split('\n');
 
-            // Find out how much the font can grow in width.
-            var widthRatio = elementWidth / stringWidth;
-            var newFontSize = Math.floor(30 * widthRatio);
-            var elementHeight = (chart.innerRadius * 2);
+            // Get the radius of the inner circle
+            const innerRadius = chart.getDatasetMeta(0).data[0].innerRadius;
 
-            // Pick a new font size so it will not be larger than the height of label.
-            var fontSizeToUse = Math.min(newFontSize, elementHeight);
+            // Calculate the maximum font size that fits within the inner circle
+            let newFontSize = Math.min(innerRadius / 3, 20); // Adjust to ensure it fits
 
-            // Set font settings to draw it correctly.
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            var centerX = ((chart.chartArea.left + chart.chartArea.right) / 2);
-            var centerY = ((chart.chartArea.top + chart.chartArea.bottom) / 2);
-            ctx.font = fontSizeToUse + "px " + fontStyle;
-            ctx.fillStyle = color;
+            const centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+            const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+            ctx.fillStyle = colour;
 
-            // Draw text in center
-            ctx.fillText(txt, centerX, centerY);
+            // Set the font once
+            ctx.font = newFontSize + "px " + fontStyle;
+
+            // Draw each line
+            lines.forEach((line, index) => {
+                const lineY = centerY - newFontSize / 2 + (index * newFontSize * 1.2); // Adjust line spacing
+                ctx.fillText(line, centerX, lineY);
+            });
         }
     }
 };
 
-var ctx = document.getElementById('donut').getContext('2d');
-var myChart = new Chart(ctx, {
+function formatCurrency(value) {
+    return value%1 == 0 ? value.toString() : value.toFixed(2);
+}
+
+let spendings ={
+    'Food': 0.46*150,
+    'Entertainment': 0.09*150,
+    'Transport': 0.135*150,
+    'Clothing': 0.20*150,
+    'Miscellaneous': 0.115*150
+};
+
+const spendingLabels = Object.keys(spendings);
+const spendingData = Object.values(spendings);
+
+const labelColours = {
+    'Food': '#FEFFBD',
+    'Entertainment': '#B0F1BE',
+    'Transport': '#FFB2C5',
+    'Clothing': '#CEB4FF',
+    'Miscellaneous': '#A3D5FF'
+};
+
+const ctx = document.getElementById('donut').getContext('2d');
+const myChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-        labels: ['Food', 'Entertainment', 'Transport', 'Clothing', 'Miscellaneous'],
+        labels: spendingLabels,
         datasets: [{
             label: 'Spendings',
-            data: [46, 9, 13.5, 20, 11.5],
-            backgroundColor: [
-                'rgba(254, 255, 189, 1)',
-                'rgba(176, 241, 190, 1)',
-                'rgba(255, 178, 197, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(163, 213, 255, 1)',
-                'rgba(206, 180, 255, 1)'
-            ],
-            borderColor: [
-                'rgba(254, 255, 189, 1)',
-                'rgba(176, 241, 190, 1)',
-                'rgba(255, 178, 197, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(163, 213, 255, 100)',
-                'rgba(204, 180, 255, 1)'
-            ],
+            data: spendingData,
+            backgroundColor: spendingLabels.map(label => labelColours[label]),
+            borderColor: spendingLabels.map(label => labelColours[label]),
             borderWidth: 0.5
         }]
     },
@@ -76,20 +80,24 @@ var myChart = new Chart(ctx, {
         plugins: {
             centerText: {
                 text: '', // Start with no text
-                color: '#FFFF99', // Default is #000000
-                fontStyle: 'Arial', // Default is Arial
+                colour: '#FFFFFF', // Default is #000000
+                fontStyle: 'Inter', // Default is Arial
                 sidePadding: 20 // Default is 20 (as a percentage)
+            },
+            tooltip: {
+                enabled: false // Disable tooltips
             }
         },
         onClick: function(e) {
-            var activePoints = myChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
+            const activePoints = myChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
             if (activePoints.length > 0) {
-                var index = activePoints[0].index;
-                var label = myChart.data.labels[index];
-                var value = myChart.data.datasets[0].data[index];
-                var maxValue = 150; // Replace with actual max value if available
-                var text = `${label}\n$${value}/$${maxValue}`;
-                myChart.options.plugins.centerText.text = text;
+                const index = activePoints[0].index;
+                const label = myChart.data.labels[index];
+                const value = myChart.data.datasets[0].data[index];
+                const maxValue = 150; // Replace with actual max value if available
+                const text = `${label}\n$${formatCurrency(value)} / $${formatCurrency(maxValue)}`;
+                const colour = labelColours[label] || '#FFFFFF';                myChart.options.plugins.centerText.text = text;
+                myChart.options.plugins.centerText.colour = colour;
                 myChart.update();
             }
         }

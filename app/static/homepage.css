@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter';
     background-color: #2c2c2c;
     color: white;
     margin: 0;
@@ -9,25 +9,26 @@ body {
 .container {
     padding: 20px;
     padding-bottom: 80px; /* Ensure this is greater than the height of the navbar */
-    position: relative; /* Added this for positioning children */ 
+    position: relative; /* Added this for positioning children */
 }
 
-.spendings-info{
+.spendings-info {
     display: flex;
     justify-content: space-between;
     width: 100%;
     margin-bottom: 20px;
 }
 
-.current-spending{
+.current-spending {
     font-size: 1.3em;
-    color:aquamarine;
+    color: aquamarine;
 }
-.avg-spending{
+.avg-spending {
     font-size: 1.3em;
 }
 
-.chart-container{
+.chart-container {
+    font-family: 'Inter';
     width: 100%;
     max-width: 600px;
     height: 400px; /* Adjust height as needed */
@@ -35,7 +36,7 @@ body {
     overflow: auto;
 }
 
-canvas{
+canvas {
     width: 100%;
     height: 100%; /* Ensure canvas takes the full size of its container */
 }
@@ -166,6 +167,7 @@ header h1 {
 
 .spendings-donut-container {
     display: flex;
+    font-family: 'Inter';
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -174,6 +176,7 @@ header h1 {
 }
 
 .spendings-donut {
+    font-family: 'Inter';
     width: 100%;
     max-width: 600px;
     position: relative; /* Add this to position text inside */
@@ -215,7 +218,7 @@ header h1 {
 }
 
 .navbar a.nav-main {
-    background-color: rgb(206, 180, 255);
+    background-color: #ceb4ff;
     padding: 15px 25px;
     border-radius: 50%;
     transform: translateY(-15%);
@@ -227,4 +230,102 @@ header h1 {
 .navbar i {
     font-size: 20px;
     vertical-align: middle;
+}
+
+.plus-button{
+    position: fixed;
+    bottom: 70px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #ceb4ff;
+    color: rgb(0, 0, 0);
+    border-radius: 50%; /*button is circular*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px; /*size of plus sign*/
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /*shadow effect*/
+    border: none; /*remove default border*/
+    z-index: 1000;
+}
+
+.plus-button:hover{
+    background-color: #B39FDB;
+}
+
+.plus-button span{
+    line-height: 1;
+}
+
+.add-trans-container{
+    display: none; /*hiding form by default*/
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-trans-form{
+    background-color: #444;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.form-group{
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label{
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    box-sizing: border-box;
+}
+
+.add-button{
+    width: 100%;
+    padding: 10px;
+    background-color: #ceb4ff; /* Button color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.add-button :hover{
+    background-color: #B39FDB;
+}
+
+.close-button{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: transparent;
+    color: #fff;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
 }
