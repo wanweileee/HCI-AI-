@@ -40,4 +40,10 @@ input[type="number"], select {
     border-radius: 5px;
     cursor: pointer;
 }
-
+/*custom field input size*/
+.custom-category-input {
+    font-size: 16px;      /* Larger text inside the input */
+    padding: 10px;        /* More padding for a bigger feel */
+    width: 100%;          /* Full width if it's within a form or container */
+    box-sizing: border-box; /* Ensures padding doesn't affect the width */
+}
