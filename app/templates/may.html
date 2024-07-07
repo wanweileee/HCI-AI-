@@ -25,15 +25,15 @@
                     <option value="february">Feb</option>
                     <option value="march">Mar</option>
                     <option value="april">Apr</option>
-                    <option value="may">May</option>
-                    <option value="june" selected>Jun</option>
+                    <option value="may" selected>May</option>
+                    <option value="june">Jun</option>
                 </select>
             </div>
         </header>
 
         <!-- Your monthly analysis content here -->
         <div class="spendings-info">
-            <div class="current-spending">Total spending:</br>$530</div>
+            <div class="current-spending">Total spending:</br>$1200</div>
             <div class="avg-spending">Avg/Week:</br> $265</div>
         </div>
         <div class="chart-container">
@@ -47,7 +47,7 @@
             </div>
             <div class="money-entry">
                 <span class="money-label">Money Out</span>
-                <span class="money-out">- $530</span>
+                <span class="money-out">- $1200</span>
             </div>
         </div>
 
@@ -57,8 +57,7 @@
                 <div class="progress-container">
                     <div class="progress-bar" id="progressFood" style="width: 50%;"></div>
                 </div>
-                <div class="category-details" id="detailsFood">$150/$300</div>
-                <button onclick="openModal('Food', '300', 'Food')">✎</button>
+                <div class="category-details" id="detailsFood">$300/$400</div>
             </div>
             
             <div class="category">
@@ -67,36 +66,23 @@
                     <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
                 </div>
                 <div class="category-details" id="detailsBills">$300/$400</div>
-                <button onclick="openModal('Bills', '400', 'Bills')">✎</button>
             </div>
-            
-        
-            <!-- Modal for editing category details -->
-            <div id="editModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h2 class="modal-title">Change Category Name and Limit</h2>
-                    <form id="editForm" onsubmit="submitForm(event)">
-                        <div class="form-group">
-                            <label for="categoryName">Name:</label>
-                            <input type="text" id="categoryName" name="categoryName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryLimit">Limit:</label>
-                            <input type="number" id="categoryLimit" name="categoryLimit" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="submit-button">Submit</button>
-                        </div>
-                    </form>
+
+            <div class="category">
+                <label id="labelBills">Entertainment</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
                 </div>
+                <div class="category-details" id="detailsBills">$300/$400</div>
             </div>
 
-        </div>  
-
-        <a href="/add" class="add-transaction-button" aria-label="Add Transaction">
-            <i>+</i>
-        </a>
+            <div class="category">
+                <label id="labelBills">Clothes</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
+                </div>
+                <div class="category-details" id="detailsBills">$300/$400</div>
+            </div>
         
     </div>
 
@@ -124,7 +110,7 @@
         }
     </script>
 
-<script src="{{ url_for('static', filename='monthly.js') }}"></script>
+<script src="{{ url_for('static', filename='may.js') }}"></script>
     
 </body>
 </html>
@@ -132,4 +118,3 @@
 
 
 {% endblock %}
-
