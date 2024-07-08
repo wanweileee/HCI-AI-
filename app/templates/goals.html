@@ -10,8 +10,10 @@
 <body>
 
 <div class="container">
+
+    <h2>Goal/Payment</h2>
+
     <button id="openModalButton" class="button-large">Add Goal/Payment</button>
-    <h1>Goal/Payment</h1>
     
     <h2>Goals List</h2>
     <ul id="goalsList"></ul>
@@ -26,18 +28,22 @@
         <option value="Goal">Goal</option>
         <option value="Planned Payment">Planned Payment</option>
     </select>
+    
     <div id="nameField">
         <label for="goalName">Name:</label>
         <input type="text" id="goalName" placeholder="Enter name">
     </div>
+    
     <div id="amountField">
         <label for="goalAmount">Amount in $:</label>
         <input type="number" id="goalAmount" placeholder="Enter amount">
     </div>
+    
     <div id="dateField" class="hidden">
         <label for="goalDate">Date:</label>
         <input type="date" id="goalDate">
     </div>
+    
     <div id="recurringField" class="hidden">
         <label for="goalRecurring">Recurring:</label>
         <select id="goalRecurring">
