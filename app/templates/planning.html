@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Planning{% endblock %}
+
+{% block content %}
+<header class="bg-dark text-white text-center py-3">
+    <h1>Planning</h1>
+</header>
+<div class="content container-fluid">
+    <div class="d-flex justify-content-end mb-3">
+        <button id="edit-btn" class="btn btn-light mr-2" onclick="toggleEditMode()"><i class="fa fa-edit"></i> Edit</button>
+        <button class="btn btn-light" data-toggle="modal" data-target="#addModal"><i class="fa fa-plus"></i> Add</button>
+    </div>
+    <div class="planned-payments">
+        <h2>Planned Payments</h2>
+        <div id="payments-list">
+            {% for payment in payments.values() %}
+            <div class="payment-item" onclick="location.href='/edit_payment/{{ payment.id }}'">
+                <div>
+                    <span>{{ payment.name }}</span>
+                    <span>{{ payment.recurring }}</span>
+                    <span>{{ payment.account }}</span>
+                </div>
+                <div>
+                    <span class="amount">- ${{ payment.amount }}</span>
+                    <span>{{ payment.date }}</span>
+                </div>
+                <button class="delete-btn btn btn-danger btn-sm" onclick="deleteEntry(this)" style="display: none;">Delete</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add goal/payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addPaymentForm">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+                            <input type="text" class="form-control" id="amount">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" class="form-control" id="date">
+                    </div>
+                    <div class="form-group">
+                        <label for="recurring">Recurring:</label>
+                        <select class="form-control" id="recurring">
+                            <option>Yearly</option>
+                            <option>Monthly</option>
+                            <option>Weekly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="account">Account:</label>
+                        <select class="form-control" id="account">
+                            <option>DBS Account no.</option>
+                            <option>POSB Account no.</option>
+                            <option>UOB Account no.</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('submit', function(event) {
+        if (event.target && event.target.id === 'addPaymentForm') {
+            event.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const amount = document.getElementById('amount').value;
+            const date = document.getElementById('date').value;
+            const recurring = document.getElementById('recurring').value;
+            const account = document.getElementById('account').value;
+
+            // Create new payment item
+            const newPaymentItem = document.createElement('div');
+            newPaymentItem.classList.add('payment-item');
+            newPaymentItem.innerHTML = `
+                <div onclick="location.href='/edit_payment/${Math.random()}'">
+                    <span>${name}</span>
+                    <span>${recurring}</span
+                    <span>${account}</span>
+                </div>
+                <div>
+                    <span class="amount">-$${amount}</span>
+                    <span>${date}</span>
+                </div>
+                <button class="delete-btn btn btn-danger btn-sm" onclick="deleteEntry(this)" style="display: none;">Delete</button>
+            `;
+
+            // Append the new payment item to the planned payments list
+            document.getElementById('payments-list').appendChild(newPaymentItem);
+
+            // Close the modal
+            $('#addModal').modal('hide');
+        }
+    });
+
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(btn => {
+            btn.style.display = editMode ? 'block' : 'none';
+        });
+    }
+
+    function deleteEntry(button) {
+        const paymentItem = button.parentElement;
+        paymentItem.remove();
+    }
+</script>
+{% endblock content %}
