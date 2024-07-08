@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Payment{% endblock %}
+
+{% block content %}
+<header class="bg-dark text-white text-center py-3">
+    <h1>Edit Payment</h1>
+</header>
+<div class="content container-fluid">
+    <form id="editPaymentForm" method="post" action="{{ url_for('main.update_payment', payment_id=payment.id) }}">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ payment.name }}">
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input type="number" class="form-control" id="amount" name="amount" value="{{ payment.amount }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="date" name="date" value="{{ payment.date }}">
+        </div>
+        <div class="form-group">
+            <label for="recurring">Recurring:</label>
+            <select class="form-control" id="recurring" name="recurring">
+                <option value="Yearly" {% if payment.recurring == "Yearly" %}selected{% endif %}>Yearly</option>
+                <option value="Monthly" {% if payment.recurring == "Monthly" %}selected{% endif %}>Monthly</option>
+                <option value="Weekly" {% if payment.recurring == "Weekly" %}selected{% endif %}>Weekly</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="account">Account:</label>
+            <select class="form-control" id="account" name="account">
+                <option value="DBS bank" {% if payment.account == "DBS bank" %}selected{% endif %}>DBS Account no.</option>
+                <option value="POSB bank" {% if payment.account == "POSB bank" %}selected{% endif %}>POSB Account no.</option>
+                <option value="UOB bank" {% if payment.account == "UOB bank" %}selected{% endif %}>UOB Account no.</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update</button>
+    </form>
+</div>
+{% endblock %}
