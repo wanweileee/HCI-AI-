@@ -1,5 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+
+{% block title %}Goals{% endblock %}
+
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +13,9 @@
 <body>
 
 <div class="container">
-
-    <h2>Goal/Payment</h2>
-
-    <button id="openModalButton" class="button-large">Add Goal/Payment</button>
-    
-    <h2>Goals List</h2>
+    <h2>Goals</h2>
+    <button id="openModalButton" class="button-large"><i class="fa-solid fa-plus"></i>Goal</button>
+    <h3>Goals List</h3>
     <ul id="goalsList"></ul>
 </div>
 
@@ -187,4 +187,5 @@
 </script>
 
 </body>
-</html>
+{% endblock content %}
+
