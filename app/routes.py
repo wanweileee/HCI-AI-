@@ -43,6 +43,10 @@ def signup():
 def planning():
     return render_template('planning.html', payments=payments)
 
+@main.route('/monthly')
+def monthly():
+    return render_template('monthly.html')
+
 @main.route('/edit_payment/<int:payment_id>')
 def edit_payment(payment_id):
     payment = payments.get(payment_id)
