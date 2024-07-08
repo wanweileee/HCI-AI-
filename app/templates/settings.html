@@ -1,8 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<header>
-    <h1>Settings!</h1>
-</header>
-<a href="/login" class="button">logout</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings Page</title>
+    <link rel="stylesheet" href="static/settings.css">
+</head>
+<body>
+    <div class="settings-container">
+        <div class="profile-section">
+            <img src="static/image/profile.png" alt="User Profile" class="profile-image">
+            <div class="username">User123</div>
+        </div>
+        <div class="settings-option">
+            <img src="static/image/account.png" alt="Account">
+            <span>Account</span>
+        </div>
+        <div class="settings-option">
+            <img src="static/image/privacy.png" alt="Privacy">
+            <span>Privacy</span>
+        </div>
+        <div class="settings-option">
+            <img src="static/image/notification.png" alt="Notifications">
+            <span>Notifications</span>
+        </div>
+        <div class="logout-section" onclick="logout()">
+            <img src="static/image/logout.png" alt="Log Out">
+            <span>Log out</span>
+        </div>
+    </div>
+    <script src="static/settings.js"></script>
+</body>
+</html>
+
 {% endblock %}

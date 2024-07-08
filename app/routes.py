@@ -33,3 +33,7 @@ def signup():
 @main.route('/monthly')
 def monthly():
     return render_template('monthly.html')
+
+@main.route('/may')
+def may():
+    return render_template('may.html')  # Assuming you have a template for May
