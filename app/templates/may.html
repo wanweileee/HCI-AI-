@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='monthly.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Spendings</h1>
+            <h2>Monthly Analysis</h2>
+            <div class="dropdowns">
+                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
+                    <option value="monthly">Month</option>
+                    <option value="weekly">Week</option>
+                </select>
+                <select id="monthSelector" class="dropdown" onchange="navigateToView()">
+                    <option value="january">Jan</option>
+                    <option value="february">Feb</option>
+                    <option value="march">Mar</option>
+                    <option value="april">Apr</option>
+                    <option value="may" selected>May</option>
+                    <option value="june">Jun</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Your monthly analysis content here -->
+        <div class="spendings-info">
+            <div class="current-spending">Total spending:</br>$1200</div>
+            <div class="avg-spending">Avg/Week:</br> $265</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="spendingsChart"></canvas>
+        </div>
+
+        <div class="money-summary">
+            <div class="money-entry">
+                <span class="money-label">Money In</span>
+                <span class="money-value">+ $2000</span>
+            </div>
+            <div class="money-entry">
+                <span class="money-label">Money Out</span>
+                <span class="money-out">- $1200</span>
+            </div>
+        </div>
+
+        <div class="spending-categories">
+            <div class="category">
+                <label id="labelFood">Food</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressFood" style="width: 50%;"></div>
+                </div>
+                <div class="category-details" id="detailsFood">$300/$400</div>
+            </div>
+            
+            <div class="category">
+                <label id="labelBills">Bills</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
+                </div>
+                <div class="category-details" id="detailsBills">$300/$400</div>
+            </div>
+
+            <div class="category">
+                <label id="labelBills">Entertainment</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
+                </div>
+                <div class="category-details" id="detailsBills">$300/$400</div>
+            </div>
+
+            <div class="category">
+                <label id="labelBills">Clothes</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBills" style="width: 75%;"></div>
+                </div>
+                <div class="category-details" id="detailsBills">$300/$400</div>
+            </div>
+        
+    </div>
+
+    <script>
+        function navigateToView() {
+            const viewSelector = document.getElementById('viewSelector');
+            const selectedValue = viewSelector.value;
+            if (selectedValue === 'weekly') {
+                window.location.href = '/';
+            } else if (selectedValue === 'monthly') {
+                window.location.href = '/monthly';
+            }
+        }
+    </script>
+
+    <script>
+        function navigateToView() {
+            const monthSelector = document.getElementById('monthSelector');
+            const selectedValue = monthSelector.value;
+            if (selectedValue === 'june') {
+                window.location.href = '/monthly';
+            } else if (selectedValue === 'may') {
+                window.location.href = '/may';
+            }
+        }
+    </script>
+
+<script src="{{ url_for('static', filename='may.js') }}"></script>
+    
+</body>
+</html>
+
+
+
+{% endblock %}

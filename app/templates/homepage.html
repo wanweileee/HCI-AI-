@@ -1,8 +1,83 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-{% block content %}
-<header>
-    <h1>Home</h1>
-</header>
+    <style>
+        .chart-container {
+            width: 100%; /* Adjust the width as needed */
+            height: 400px; /* Adjust the height as needed */
+        }
 
-{% endblock %}
+        .spendings-donut {
+            width: 50%; /* Adjust the width as needed */
+            height: 400px; /* Adjust the height as needed */
+        }
+
+        .spendings-donut canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Spendings</h1>
+            <h2>Weekly Analysis</h2>
+            <div class="dropdowns">
+                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
+                    <option value="weekly">Week</option>
+                    <option value="monthly">Month</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Your weekly analysis content here -->
+        <div class="spendings-info">
+            <div class="current-spending">Total spending:<br>$120.96</div>
+            <div class="avg-spending">Avg/Day:<br> $20.30</div>
+        </div>
+        <div class="chart-container">
+            <canvas id="spendingsChart"></canvas>
+        </div>
+
+        <h2>Check on what you spent on!</h2>
+        <div class="spendings-donut">
+            <canvas id="donut"></canvas>
+        </div>
+
+        
+
+        <div class="plus-button" onclick="addTransForm()">
+            <span>+</span>
+        </div>
+
+        <div class="add-trans-container" id="addTransContainer" style="display: none;"></div> <!-- Ensure display: none initially -->
+
+    </div>
+
+    <script>
+        function navigateToView() {
+            const viewSelector = document.getElementById('viewSelector');
+            const selectedValue = viewSelector.value;
+            if (selectedValue === 'weekly') {
+                window.location.href = '/';
+            } else if (selectedValue === 'monthly') {
+                window.location.href = '/monthly';
+            }
+        }       
+    </script>
+
+    <!-- Load custom scripts -->
+    <script src="{{ url_for('static', filename='weekly.js') }}"></script>
+    <script src="{{ url_for('static', filename='donutchart.js') }}"></script>
+    <script src="{{ url_for('static', filename='addtrans.js') }}"></script>
+
+</body>
+</html>

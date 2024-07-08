@@ -1,0 +1,49 @@
+body {
+    background-color: #333;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.add-transaction-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #222;
+    border-radius: 8px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    margin-inline-end: 20px;
+}
+
+label {
+    display: block;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+}
+
+.submit-button {
+    width: 100%;
+    background-color: purple;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+/*custom field input size*/
+.custom-category-input {
+    font-size: 16px;      /* Larger text inside the input */
+    padding: 10px;        /* More padding for a bigger feel */
+    width: 100%;          /* Full width if it's within a form or container */
+    box-sizing: border-box; /* Ensures padding doesn't affect the width */
+}
