@@ -329,3 +329,36 @@ header h1 {
     border: none;
     cursor: pointer;
 }
+
+.arrow{
+    font-size: 24px;
+    color: #ceb4ff;
+    cursor: pointer;
+    padding: 0 10px;
+    transition: color 0.3s;
+}
+
+.arrow:hover_{
+    color: #B39FDB;
+}
+
+.budget-text {
+    font-size: 1.2em;
+    color: #ffffff;
+}
+
+.expenses-container {
+    margin-top: 20px;
+    background-color: #333;
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto; /* Center the transactions container */
+}
+
+.expenses-item {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+    color: white;
+    cursor: pointer;
+}

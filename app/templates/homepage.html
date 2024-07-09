@@ -47,20 +47,26 @@
             <canvas id="spendingsChart"></canvas>
         </div>
 
-        <h2>Check on what you spent on!</h2>
+        <h3>Check on what you spent on!</h3>
         <div class="spendings-donut">
             <canvas id="donut"></canvas>
         </div>
-
         
+        <div class = "header-arrow">
+            <button class="arrow" id="leftArrow"></button>
+            <div class="budget-header">Your weekly budget: $150</div>
+            <button class="arrow" id="rightArrow"></button>
+        </div>
+        
+
+        <div id="expensesContainer" class="expenses-container"></div>
 
         <div class="plus-button" onclick="addTransForm()">
             <span>+</span>
         </div>
 
-        <div class="add-trans-container" id="addTransContainer" style="display: none;"></div> <!-- Ensure display: none initially -->
+        <div class="add-trans-container" id="addTransContainer" style="display: none;"></div> 
 
-    </div>
 
     <script>
         function navigateToView() {
