@@ -34,6 +34,10 @@ def login():
 def signup():
     return render_template('signup.html')
 
+@main.route('/monthly')
+def monthly():
+    return render_template('monthly.html')
+
 @main.route('/scan', methods=['GET', 'POST'])
 def scan():
     if request.method == 'POST':
