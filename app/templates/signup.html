@@ -1,7 +1,45 @@
-
 {% block content %}
-<header>
-    <h1>signup</h1>
-</header>
-<a href="/" class="button">link Sgfindex</a>
+<div class="container">
+    <h1>Welcome to SaveSmart!</h1>
+    <a href="/" class="button">Link to sgfindex</a>
+</div>
 {% endblock %}
+
+<style>
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+    width: 80%;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 90px;  /* Increased font size for the heading */
+}
+
+.button {
+    display: inline-block;
+    background-color: #555;
+    color: white;
+    padding: 20px 30px;  /* Increased padding for a larger button */
+    text-decoration: none;
+    font-size: 70px;  /* Increased font size for the button text */
+    border-radius: 8px;  /* Slightly larger border radius for aesthetics */
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #777;
+}
+
+</style>
