@@ -3,12 +3,15 @@ import pytesseract
 from PIL import Image
 import os
 from transformers import pipeline
+from .extensions import db
+from .models import Payment
 
 classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\banan\OneDrive\Documents\GitHub\HCI-AI-\tesseract.exe'  # Adjust the path if needed
 
 main = Blueprint('main', __name__)
+
 
 # Sample data to simulate a database
 payments = {
@@ -39,8 +42,14 @@ def login():
 def signup():
     return render_template('signup.html')
 
-@main.route('/planning')
+@main.route('/planning', methods=['GET', 'POST'])
 def planning():
+    foundpayments = Payment.query.filter_by(name='Chatgpt').first()
+    if not foundpayments:
+        new_payment = Payment(name='Chatgpt', amount=40, date='2024-06-29', recurring='Monthly', account='DBS bank', type='Planned Payments')
+        db.session.add(new_payment)
+        db.session.commit()
+
     return render_template('planning.html', payments=payments)
 
 @main.route('/monthly')
