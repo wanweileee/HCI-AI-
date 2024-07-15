@@ -49,18 +49,41 @@
             <canvas id="spendingsChart"></canvas>
         </div>
 
-        <h2>Check on what you spent on!</h2>
+        <h4>Check on what you spent on!</h4>
         <div class="spendings-donut">
             <canvas id="donut"></canvas>
         </div>
 
         
 
-        <div class="plus-button" onclick="addTransForm()">
+        <div class="plus-button" onclick="showAddTransForm()">
             <span>+</span>
         </div>
 
-        <div class="add-trans-container" id="addTransContainer" style="display: none;"></div> <!-- Ensure display: none initially -->
+        <div class="minus-button" onclick="showRemoveTransForm()">
+            <span>-</span>
+        </div>
+
+    <div class="add-trans-container" id="addTransContainer"></div>
+
+    <div class="remove-trans-container" id="removeTransContainer">
+        <div class="remove-trans-form">
+            <div class="form-header">
+                <h1>Remove Expense</h1>
+                <button class="close-button" onclick="hideRemoveTransForm()">&times;</button>
+            </div>
+            <ul id="removeList">
+                <!-- List items will be dynamically added here -->
+            </ul>
+        </div>
+
+        <div class="confirm-popup hidden" id="confirmPopup">
+            <p>Are you sure you want to remove this expense?</p>
+            <button onclick="performRemove()">Yes</button>
+            <button onclick="hideConfirmPopup()">No</button>
+        </div>
+
+    </div>
 
     </div>
 
