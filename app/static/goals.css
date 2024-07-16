@@ -86,6 +86,7 @@ ul {
 }
 li {
     background: #ffffff;
+    width: 95%;
     padding: 10px;
     margin-bottom: 5px;
     border-radius: 4px;
@@ -93,53 +94,65 @@ li {
     position: relative;
     color: black;
 }
+/* Styles for progress bar */
 .progress-bar-container {
-    width: 90%;
-    background-color: #ffffff;
-    border-radius: 4px;
-    overflow: hidden;
+    width: 100%;
+    background-color: #f0f0f0;
+    height: 20px;
+    border-radius: 5px;
     margin-top: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
 }
+
 .progress-bar {
-    height: 10px;
-    background-color: #4CAF50;
     width: 0;
-    border-radius: 4px;
-    position: relative;
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.5s ease-in-out;
 }
+
 .progress-text {
-    position: absolute;
-    top: 80%;
-    left: 95%;
-    transform: translate(-50%, -50%);
-    color: rgb(255, 255, 255);
-    font-size: 0.8em;
+    line-height: 20px;
+    padding: 0 5px;
+    color: white;
+    font-weight: bold;
 }
+
+/* Styles for edit and remove buttons */
 .edit-button, .remove-button {
     background-color: transparent;
     border: none;
     cursor: pointer;
     padding: 5px;
     margin-left: 10px;
+    display: inline-block; /* Ensure buttons are inline */
 }
+
 .edit-button i, .remove-button i {
     color: #008CBA;
 }
+
 .edit-button:hover i, .remove-button:hover i {
     color: #007bb5;
 }
+
 .update-container {
     display: none;
     margin-top: 10px;
 }
+
 .update-container input {
     width: calc(100% - 50px);
     display: inline-block;
 }
+
 .update-container button {
     width: 45px;
     display: inline-block;
+    margin-left: 5px; /* Adjust margin between buttons */
 }
+
 .modal {
     display: none; 
     position: fixed; 
@@ -180,3 +193,38 @@ li {
         max-width: 600px;
     }
 }
+
+/* Additional styles for goals */
+.goal-header {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goal-header i {
+    transition: transform 0.3s ease;
+}
+
+.goal-details {
+    display: none;
+    margin-top: 10px;
+}
+
+.goal-details.expanded {
+    display: block;
+}
+
+.goal-info {
+    margin-bottom: 10px;
+}
+
+.goal-actions button {
+    margin-right: 10px;
+}
+
