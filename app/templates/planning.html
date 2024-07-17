@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
+
 {% block title %}Planning{% endblock %}
+
 
 {% block content %}
 <header class="bg-dark text-white text-center py-3">
@@ -31,6 +33,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -84,6 +87,7 @@
     </div>
 </div>
 
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
@@ -91,12 +95,14 @@
         if (event.target && event.target.id === 'addPaymentForm') {
             event.preventDefault();
 
+
             // Get form values
             const name = document.getElementById('name').value;
             const amount = document.getElementById('amount').value;
             const date = document.getElementById('date').value;
             const recurring = document.getElementById('recurring').value;
             const account = document.getElementById('account').value;
+
 
             // Create new payment item
             const newPaymentItem = document.createElement('div');
@@ -114,15 +120,19 @@
                 <button class="delete-btn btn btn-danger btn-sm" onclick="deleteEntry(this)" style="display: none;">Delete</button>
             `;
 
+
             // Append the new payment item to the planned payments list
             document.getElementById('payments-list').appendChild(newPaymentItem);
+
 
             // Close the modal
             $('#addModal').modal('hide');
         }
     });
 
+
     let editMode = false;
+
 
     function toggleEditMode() {
         editMode = !editMode;
@@ -131,6 +141,7 @@
             btn.style.display = editMode ? 'block' : 'none';
         });
     }
+
 
     function deleteEntry(button) {
         const paymentItem = button.parentElement;
