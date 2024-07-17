@@ -6,18 +6,23 @@ const centerTextPlugin = {
         if (centerConfig && chart.chartArea) {
             const ctx = chart.ctx;
 
+
             const fontStyle = centerConfig.fontStyle || 'Arial';
             const txt = centerConfig.text || '';
             const colour = centerConfig.colour || '#000';
 
+
             // Split the text into two lines
             const lines = txt.split('\n');
+
 
             // Get the radius of the inner circle
             const innerRadius = chart.getDatasetMeta(0).data[0].innerRadius;
 
+
             // Calculate the maximum font size that fits within the inner circle
-            let newFontSize = Math.min(innerRadius / 3, 20); // Adjust to ensure it fits
+            let newFontSize = Math.min(innerRadius / 3, 15); // Adjust to ensure it fits
+
 
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -25,8 +30,10 @@ const centerTextPlugin = {
             const centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
             ctx.fillStyle = colour;
 
+
             // Set the font once
             ctx.font = newFontSize + "px " + fontStyle;
+
 
             // Draw each line
             lines.forEach((line, index) => {
@@ -37,28 +44,42 @@ const centerTextPlugin = {
     }
 };
 
+
 function formatCurrency(value) {
-    return value%1 == 0 ? value.toString() : value.toFixed(2);
+    return value % 1 == 0 ? value.toString() : value.toFixed(2);
 }
 
-let spendings ={
-    'Food': 0.46*150,
-    'Entertainment': 0.09*150,
-    'Transport': 0.135*150,
-    'Clothing': 0.20*150,
-    'Miscellaneous': 0.115*150
+
+let maxValue = 265;
+
+
+let spendings = {
+    'Food': 0.30 * maxValue,
+    'Entertainment': 0.09 * maxValue,
+    'Transport': 0.20 * maxValue,
+    'Clothing': 0.08 * maxValue,
+    'Miscellaneous': 0.15 * maxValue
 };
 
-const spendingLabels = Object.keys(spendings);
-const spendingData = Object.values(spendings);
+
+// Calculate the initial remaining value
+let remaining = maxValue - Object.values(spendings).reduce((a, b) => a + b, 0);
+spendings['Remaining'] = remaining;
+
 
 const labelColours = {
     'Food': '#FEFFBD',
     'Entertainment': '#B0F1BE',
     'Transport': '#FFB2C5',
     'Clothing': '#CEB4FF',
-    'Miscellaneous': '#A3D5FF'
+    'Miscellaneous': '#A3D5FF',
+    'Remaining': '#ffffff' // Ensure 'Remaining' color is defined
 };
+
+
+const spendingLabels = Object.keys(spendings);
+const spendingData = Object.values(spendings);
+
 
 const ctx = document.getElementById('donut').getContext('2d');
 const myChart = new Chart(ctx, {
@@ -94,9 +115,9 @@ const myChart = new Chart(ctx, {
                 const index = activePoints[0].index;
                 const label = myChart.data.labels[index];
                 const value = myChart.data.datasets[0].data[index];
-                const maxValue = 150; // Replace with actual max value if available
                 const text = `${label}\n$${formatCurrency(value)} / $${formatCurrency(maxValue)}`;
-                const colour = labelColours[label] || '#FFFFFF';                myChart.options.plugins.centerText.text = text;
+                const colour = labelColours[label] || '#FFFFFF';
+                myChart.options.plugins.centerText.text = text;
                 myChart.options.plugins.centerText.colour = colour;
                 myChart.update();
             }
