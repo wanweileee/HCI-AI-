@@ -9,6 +9,10 @@ body {
 .container {
     padding: 20px;
     position: relative; /* Added this for positioning children */
+    height: 200vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
 }
 
 .spendings-info{
@@ -146,6 +150,13 @@ header h1 {
 
 
 /* category and edit bars */
+.spending-categories {
+    max-height: 600px; /* Set the height you want */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-bottom: 20px;
+}
+
+
 .spending-categories .category {
     display: flex;
     align-items: center;
