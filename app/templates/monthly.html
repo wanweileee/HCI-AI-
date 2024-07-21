@@ -52,52 +52,58 @@
         </div>
 
         <div class="spending-categories">
-            <div class="category">
+            <!-- Default categories -->
+            <div class="category" id="categoryFood">
                 <label id="labelFood">Food</label>
                 <div class="progress-container">
-                    <div class="progress-bar" id="progressFood" style="width: 50%;"></div>
+                    <div class="progress-bar" id="progressFood" style="width: 66.67%;"></div>
                 </div>
-                <div class="category-details" id="detailsFood">$150/$300</div>
+                <div class="category-details" id="detailsFood">$200/$300</div>
                 <button onclick="openModal('Food', '300', 'Food')">✎</button>
             </div>
             
-            <div class="category">
+            <div class="category" id="categoryClothing">
                 <label id="labelClothing">Clothing</label>
                 <div class="progress-container">
-                    <div class="progress-bar" id="progressClothing" style="width: 75%;"></div>
+                    <div class="progress-bar" id="progressClothing" style="width: 62.5%;"></div>
                 </div>
-                <div class="category-details" id="detailsClothing">$300/$400</div>
+                <div class="category-details" id="detailsClothing">$250/$400</div>
                 <button onclick="openModal('Clothing', '400', 'Clothing')">✎</button>
             </div>
-            
-        
-            <!-- Modal for editing category details -->
-            <div id="editModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h2 class="modal-title">Change Category Name and Limit</h2>
-                    <form id="editForm" onsubmit="submitForm(event)">
-                        <div class="form-group">
-                            <label for="categoryName">Name:</label>
-                            <input type="text" id="categoryName" name="categoryName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryLimit">Limit:</label>
-                            <input type="number" id="categoryLimit" name="categoryLimit" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="submit-button">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
         </div>  
 
-        <a href="/add" class="add-transaction-button" aria-label="Add Transaction">
+        <!-- Modal for adding a new expense -->
+        <div id="addExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddExpenseModal()">&times;</span>
+                <h2 class="modal-title">Add Transaction</h2>
+                <form id="addExpenseForm" onsubmit="addExpense(event)">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" onchange="checkCustomCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Custom">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="customCategory" name="customCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <button class="add-transaction-button" aria-label="Add Transaction" onclick="openAddExpenseModal()">
             <i>+</i>
-        </a>
-        
+        </button>
     </div>
 
     <script>
@@ -110,26 +116,61 @@
                 window.location.href = '/monthly';
             }
         }
-    </script>
 
-    <!-- <script>
-        function navigateToView() {
-            const monthSelector = document.getElementById('monthSelector');
-            const selectedValue = monthSelector.value;
-            if (selectedValue === 'june') {
-                window.location.href = '/monthly';
-            } else if (selectedValue === 'may') {
-                window.location.href = '/may';
+        function openModal(categoryName, categoryLimit, categoryId) {
+            document.getElementById('categoryName').value = categoryName;
+            document.getElementById('categoryLimit').value = categoryLimit;
+            document.getElementById('editModal').style.display = 'block';
+
+            document.getElementById('editForm').dataset.categoryId = categoryId;
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function openAddExpenseModal() {
+            document.getElementById('addExpenseModal').style.display = 'block';
+        }
+
+        function closeAddExpenseModal() {
+            document.getElementById('addExpenseModal').style.display = 'none';
+        }
+
+        function checkCustomCategory() {
+            var categorySelect = document.getElementById('category');
+            var customInput = document.getElementById('customCategory');
+        
+            if (categorySelect.value === 'Custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
             }
         }
-    </script> -->
 
-<script src="{{ url_for('static', filename='monthly.js') }}"></script>
-    
+        function addExpense(event) {
+            event.preventDefault();
+            
+            const categorySelect = document.getElementById('category');
+            const customCategoryInput = document.getElementById('customCategory');
+            const amountInput = document.getElementById('amount');
+
+            let category = categorySelect.value;
+            if (category === 'Custom') {
+                category = customCategoryInput.value;
+            }
+            const amount = parseFloat(amountInput.value);
+
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            transactions.push({ category, amount });
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            updateUI();
+            closeAddExpenseModal();
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='monthly.js') }}"></script>
 </body>
 </html>
-
-
-
 {% endblock %}
-
