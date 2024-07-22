@@ -9,23 +9,6 @@
     <title>Weekly Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        .chart-container {
-            width: 100%; /* Adjust the width as needed */
-            height: 400px; /* Adjust the height as needed */
-        }
-
-        .spendings-donut {
-            width: 50%; /* Adjust the width as needed */
-            height: 400px; /* Adjust the height as needed */
-        }
-
-        .spendings-donut canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -34,57 +17,144 @@
             <h2>Weekly Analysis</h2>
             <div class="dropdowns">
                 <select id="viewSelector" class="dropdown" onchange="navigateToView()">
-                    <option value="weekly">Week</option>
                     <option value="monthly">Month</option>
+                    <option value="weekly" selected>Week</option>
+                </select>
+                <select id="weekSelector" class="dropdown" onchange="navigateToView()">
+                    <option value="week1">Week 1</option>
+                    <option value="week2">Week 2</option>
+                    <option value="week3">Week 3</option>
+                    <option value="week4">Week 4</option>
                 </select>
             </div>
         </header>
 
         <!-- Your weekly analysis content here -->
         <div class="spendings-info">
-            <div class="current-spending">Total spending:<br>$120.96</div>
-            <div class="avg-spending">Avg/Day:<br> $20.30</div>
+            <div class="current-spending">Total spending:</br>$120</div>
+            <div class="avg-spending">Avg/Day:</br> $17</div>
         </div>
         <div class="chart-container">
             <canvas id="spendingsChart"></canvas>
         </div>
 
-        <h4>Check on what you spent on!</h4>
-        <div class="spendings-donut">
-            <canvas id="donut"></canvas>
-        </div>
-
-        
-
-        <div class="plus-button" onclick="showAddTransForm()">
-            <span>+</span>
-        </div>
-
-        <div class="minus-button" onclick="showRemoveTransForm()">
-            <span>-</span>
-        </div>
-
-    <div class="add-trans-container" id="addTransContainer"></div>
-
-    <div class="remove-trans-container" id="removeTransContainer">
-        <div class="remove-trans-form">
-            <div class="form-header">
-                <h1>Remove Expense</h1>
-                <button class="close-button" onclick="hideRemoveTransForm()">&times;</button>
+        <div class="money-summary">
+            <div class="money-entry">
+                <span class="money-label">Money In</span>
+                <span class="money-value">+ $500</span>
             </div>
-            <ul id="removeList">
-                <!-- List items will be dynamically added here -->
-            </ul>
+            <div class="money-entry">
+                <span class="money-label">Money Out</span>
+                <span class="money-out">- $120</span>
+            </div>
         </div>
 
-        <div class="confirm-popup hidden" id="confirmPopup">
-            <p>Are you sure you want to remove this expense?</p>
-            <button onclick="performRemove()">Yes</button>
-            <button onclick="hideConfirmPopup()">No</button>
+        <div class="spending-categories">
+            <!-- Default categories -->
+            <div class="category" id="categoryFood">
+                <label id="labelFood">Food</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressFood" style="width: 40%;"></div>
+                </div>
+                <div class="category-details" id="detailsFood">$40/$100</div>
+                <button onclick="openModal('Food', 100, 'Food')">✎</button>
+            </div>
+            
+            <div class="category" id="categoryClothing">
+                <label id="labelClothing">Clothing</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressClothing" style="width: 25%;"></div>
+                </div>
+                <div class="category-details" id="detailsClothing">$25/$100</div>
+                <button onclick="openModal('Clothing', 100, 'Clothing')">✎</button>
+            </div>
+        </div>  
+
+        <!-- Modal for adding a new expense -->
+        <div id="addExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddExpenseModal()">&times;</span>
+                <h2 class="modal-title">Add Transaction</h2>
+                <form id="addExpenseForm" onsubmit="addExpense(event)">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" onchange="checkCustomCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Custom">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="customCategory" name="customCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Add</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-    </div>
+        <!-- Modal for deducting an expense -->
+        <div id="deductExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeductExpenseModal()">&times;</span>
+                <h2 class="modal-title">Deduct Transaction</h2>
+                <form id="deductExpenseForm" onsubmit="deductExpense(event)">
+                    <div class="form-group">
+                        <label for="deductCategory">Category:</label>
+                        <select id="deductCategory" name="deductCategory" onchange="checkCustomCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Custom">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="deductCustomCategory" name="deductCustomCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="deductAmount">Amount:</label>
+                        <input type="number" id="deductAmount" name="deductAmount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Deduct</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
+        <!-- Modal for editing category details -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="modal-title">Edit Category</h2>
+                <form id="editForm" onsubmit="submitEditForm(event)">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name:</label>
+                        <input type="text" id="categoryName" name="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryLimit">Category Limit:</label>
+                        <input type="number" id="categoryLimit" name="categoryLimit" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <button class="add-transaction-button" aria-label="Add Transaction" onclick="openAddExpenseModal()">
+            <i>+</i>
+        </button>
+        <button class="deduct-transaction-button" aria-label="Deduct Transaction" onclick="openDeductExpenseModal()">
+            <i>-</i>
+        </button>
     </div>
 
     <script>
@@ -92,19 +162,176 @@
             const viewSelector = document.getElementById('viewSelector');
             const selectedValue = viewSelector.value;
             if (selectedValue === 'weekly') {
-                window.location.href = '/';
+                window.location.href = '/weekly';
             } else if (selectedValue === 'monthly') {
                 window.location.href = '/monthly';
             }
-        }       
+        }
+
+        function openModal(categoryName, categoryLimit, categoryId) {
+            document.getElementById('categoryName').value = categoryName;
+            document.getElementById('categoryLimit').value = categoryLimit;
+            document.getElementById('editModal').style.display = 'block';
+
+            document.getElementById('editForm').dataset.categoryId = categoryId;
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function openAddExpenseModal() {
+            document.getElementById('addExpenseModal').style.display = 'block';
+        }
+
+        function closeAddExpenseModal() {
+            document.getElementById('addExpenseModal').style.display = 'none';
+        }
+
+        function openDeductExpenseModal() {
+            document.getElementById('deductExpenseModal').style.display = 'block';
+        }
+
+        function closeDeductExpenseModal() {
+            document.getElementById('deductExpenseModal').style.display = 'none';
+        }
+
+        function checkCustomCategory() {
+            var categorySelect = document.getElementById('category');
+            var customInput = document.getElementById('customCategory');
+        
+            if (categorySelect.value === 'Custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+
+        function addExpense(event) {
+            event.preventDefault();
+            
+            const categorySelect = document.getElementById('category');
+            const customCategoryInput = document.getElementById('customCategory');
+            const amountInput = document.getElementById('amount');
+
+            let category = categorySelect.value;
+            if (category === 'Custom') {
+                category = customCategoryInput.value;
+            }
+            const amount = parseFloat(amountInput.value);
+
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            transactions.push({ category, amount, date: new Date() });
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            updateUI();
+            closeAddExpenseModal();
+        }
+
+        function deductExpense(event) {
+            event.preventDefault();
+            
+            const categorySelect = document.getElementById('deductCategory');
+            const customCategoryInput = document.getElementById('deductCustomCategory');
+            const amountInput = document.getElementById('deductAmount');
+
+            let category = categorySelect.value;
+            if (category === 'Custom') {
+                category = customCategoryInput.value;
+            }
+            const amount = parseFloat(amountInput.value);
+
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            transactions.push({ category, amount: -amount, date: new Date() });
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            updateUI();
+            closeDeductExpenseModal();
+        }
+
+        function submitEditForm(event) {
+            event.preventDefault();
+            
+            const categoryName = document.getElementById('categoryName').value;
+            const categoryLimit = document.getElementById('categoryLimit').value;
+            const categoryId = document.getElementById('editForm').dataset.categoryId;
+
+            const label = document.getElementById('label' + categoryId);
+            const details = document.getElementById('details' + categoryId);
+            const progressBar = document.getElementById('progress' + categoryId);
+
+            if (label && details && progressBar) {
+                label.textContent = categoryName;
+
+                const currentSpend = details.textContent.split('/')[0].replace('$', '');
+                details.textContent = `$${currentSpend}/$${categoryLimit}`;
+
+                const spendPercentage = (parseFloat(currentSpend) / parseFloat(categoryLimit)) * 100;
+                progressBar.style.width = `${spendPercentage}%`;
+            }
+
+            closeModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUI();
+        });
+
+        function updateUI() {
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            let totalSpending = 0;
+            let categories = {};
+
+            // Filter transactions for the current week
+            const currentWeekTransactions = transactions.filter(tx => isThisWeek(new Date(tx.date)));
+
+            currentWeekTransactions.forEach(tx => {
+                totalSpending += tx.amount;
+                if (categories[tx.category]) {
+                    categories[tx.category] += tx.amount;
+                } else {
+                    categories[tx.category] = tx.amount;
+                }
+            });
+
+            document.querySelector('.current-spending').innerHTML = `Total spending:<br>$${totalSpending}`;
+            document.querySelector('.money-out').textContent = ` -$${totalSpending}`;
+
+            // Clear and recreate the category elements to avoid duplicates
+            const container = document.querySelector('.spending-categories');
+            container.innerHTML = ''; // Clear the container
+
+            for (let category in categories) {
+                createCategoryBar(category, categories[category]);
+            }
+        }
+
+        function createCategoryBar(category, amount, limit = 100) {
+            let container = document.querySelector('.spending-categories');
+            let newCategory = document.createElement('div');
+            newCategory.className = 'category';
+            newCategory.id = `category${category}`; // Ensure unique ID
+            newCategory.innerHTML = `
+                <label id="label${category}">${category}</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress${category}" style="width: ${Math.min((amount / limit) * 100, 100)}%;"></div>
+                </div>
+                <div class="category-details" id="details${category}">$${amount}/$${limit}</div>
+                <button onclick="openModal('${category}', '${limit}', '${category}')">✎</button>
+            `;
+            container.appendChild(newCategory);
+        }
+
+        function isThisWeek(date) {
+            const today = new Date();
+            const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+            const lastDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+            return date >= firstDayOfWeek && date <= lastDayOfWeek;
+        }
     </script>
 
-    <!-- Load custom scripts -->
     <script src="{{ url_for('static', filename='weekly.js') }}"></script>
-    <script src="{{ url_for('static', filename='donutchart.js') }}"></script>
-    <script src="{{ url_for('static', filename='addtrans.js') }}"></script>
-
 </body>
 </html>
-
 {% endblock %}
+

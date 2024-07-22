@@ -1,5 +1,5 @@
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
     background-color: #2c2c2c;
     color: white;
     margin: 0;
@@ -8,60 +8,96 @@ body {
 
 .container {
     padding: 20px;
-    padding-bottom: 80px; /* Ensure this is greater than the height of the navbar */
-    position: relative;
+    position: relative; /* Added this for positioning children */
+    height: 200vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
 }
 
-.spendings-info {
+.spendings-info{
     display: flex;
     justify-content: space-between;
     width: 100%;
     margin-bottom: 20px;
 }
 
-.current-spending,
-.avg-spending {
+.current-spending{
+    font-size: 1.3em;
+    color:aquamarine;
+}
+.avg-spending{
     font-size: 1.3em;
 }
 
-.current-spending {
-    color: aquamarine;
-}
-
-.chart-container {
-    width: 100%;
+.chart-container{
+    width:100%;
     max-width: 600px;
-    height: 400px; /* Adjust height as needed */
-    margin: 0 auto; /* Center the chart */
-    overflow: auto;
+    height: 170px;
 }
 
-canvas {
-    width: 100%;
-    height: 100%; /* Ensure canvas takes the full size of its container */
+canvas{
+    width:100%;
+    max-width: 100%;
 }
+
+/* for money in, money out table*/
+
+.money-summary {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 20px 0;
+    background-color: #333; /* Dark background */
+    border-radius: 10px;
+    padding: 10px 0;
+}
+
+.money-entry {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.money-label {
+    display: block;
+    font-size: 1em;
+    color: #ccc;
+}
+.money-value {
+    display: block;
+    font-size: 1.5em;
+    color: greenyellow;
+    margin-top: 5px;
+}
+
+.money-out {
+    display: block;
+    font-size: 1.5em;
+    color: red;
+    margin-top: 5px;
+}
+
+
+
 
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    position: relative; /* Added this for positioning children */
 }
 
 header h1 {
     font-size: 2em;
 }
 
-h4 {
-    font-size: 1.5em;
-}
-
 .dropdowns {
     display: flex;
     gap: 10px;
-    position: absolute;
-    right: 0;
-    top: 0;
+    position: absolute; /* Added this for absolute positioning */
+    right: 0; /* Align to the right */
+    top: 0; /* Align to the top */
 }
 
 .dropdown {
@@ -78,13 +114,12 @@ h4 {
     box-shadow: 0 0 5px #aaa;
 }
 
+/* Additional styling for the weekly and monthly views */
 .analysis-content {
     margin-top: 20px;
 }
 
-.chart,
-.budget-info,
-.transactions {
+.chart, .budget-info, .transactions {
     margin-bottom: 20px;
 }
 
@@ -93,15 +128,13 @@ h4 {
     justify-content: space-between;
 }
 
-.budget-info,
-.transactions {
+.budget-info, .transactions {
     background-color: #333;
     padding: 15px;
     border-radius: 10px;
 }
 
-.budget-info h2,
-.transactions h2 {
+.budget-info h2, .transactions h2 {
     margin-top: 0;
 }
 
@@ -115,15 +148,132 @@ h4 {
     border-bottom: 1px solid #444;
 }
 
+
+/* category and edit bars */
+.spending-categories {
+    max-height: 600px; /* Set the height you want */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-bottom: 20px;
+}
+
+
+.spending-categories .category {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.progress-container {
+    background-color: #ccc; /* Light gray for the unfilled part */
+    flex-grow: 1;
+    margin: 0 10px;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: purple; /* Purple for the filled part */
+    transition: width 0.3s ease;
+}
+
+button {
+    background: none;
+    border: none;
+    color: rgb(228, 175, 255);
+    cursor: pointer;
+    font-size: 1.4em;
+}
+
+.category-details {
+    min-width: 70px;
+    text-align: right;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    color: #000; /* Ensure text color is black for visibility */
+    margin: 10% auto; /* Center the modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Responsive width */
+    max-width: 500px; /* Maximum width */
+    position: relative;
+    z-index: 1050;
+}
+
+
+.form-group {
+    margin-bottom: 20px;  /* Spacing between form elements */
+    margin-inline-end: 30px;
+    clear: both;
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc; /* Ensure input border is visible */
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-title {
+    font-size: 24px; /* Ensure the title is visible */
+    text-decoration: underline;
+    text-align: center; /* Center the title for better visibility */
+}
+
+.submit-button {
+    background-color: purple;
+    color: white; /* Text color for button */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block; /* Fill width of container */
+    width: 100%; /* Use full width for button */
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         align-items: flex-start;
+        position: relative;
     }
 
     .dropdowns {
+        position: absolute; /* Keep absolute positioning */
+        right: 0; /* Align to the right */
+        top: 0; /* Align to the top */
         flex-direction: column;
+    }
+
+    .dropdown {
+        width: auto; /* Allow dropdowns to size based on content */
     }
 
     .chart {
@@ -131,8 +281,7 @@ h4 {
         align-items: center;
     }
 
-    .budget-info,
-    .transactions {
+    .budget-info, .transactions {
         width: 100%;
     }
 
@@ -151,266 +300,64 @@ h4 {
         font-size: 1.5em;
     }
 
+    .dropdown {
+        width: auto; /* Allow dropdowns to size based on content */
+    }
+
     .dropdowns {
+        position: absolute; /* Keep absolute positioning */
+        right: 0; /* Align to the right */
+        top: 0; /* Align to the top */
         flex-direction: column;
         gap: 10px;
     }
 }
 
-.spendings-donut-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    margin: 0 auto;
-}
 
-.spendings-donut {
-    width: 100%;
-    max-width: 600px;
-    position: relative;
-    margin: 0 auto;
-}
-
-.spendings-donut h3 {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.spendings-donut canvas {
-    width: 100% !important;
-    height: 400px !important; /* Adjust the height as needed */
-}
-
-/* Navbar styling */
-.navbar {
+/*add button*/
+/* Add these styles to your monthly.css file */
+.add-transaction-button {
     position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #000;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 5px 0;
-    box-sizing: border-box;
-    z-index: 100;
-}
-
-.navbar a.nav-item {
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    padding: 10px;
-    flex-grow: 1;
-    transition: color 0.3s;
-}
-
-.navbar a.nav-main {
-    background-color: #ceb4ff;
-    padding: 15px 25px;
-    border-radius: 50%;
-    transform: translateY(-15%);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 105;
-}
-
-.navbar i {
-    font-size: 20px;
-    vertical-align: middle;
-}
-
-.plus-button,
-.minus-button {
-    position: fixed;
-    bottom: 80px;
+    bottom: 70px;
     right: 10px;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    background-color: #ceb4ff;
+    color: rgb(0, 0, 0);
+    border-radius: 50%; /*button is circular*/
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 24px; /*size of plus sign*/
     cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /*shadow effect*/
+    border: none; /*remove default border*/
     z-index: 1000;
 }
 
-.plus-button {
-    background-color: #ceb4ff;
-    color: #000;
-}
-
-.plus-button:hover {
-    background-color: #b39fdb;
-}
-
-.minus-button {
-    bottom: 130px;
-    background-color: #ce8ca6;
-    color: #000;
-    font-size: 28px;
-}
-
-.minus-button:hover {
-    background-color: #d0638f;
-}
-
-.form-container {
-    margin: 20px 0;
-}
-
-.add-trans-container,
-.remove-trans-container {
-    display: none;
+.deduct-transaction-button {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    box-sizing: border-box;
-    width: 300px;
-}
-
-.add-trans-form,
-.remove-trans-form {
-    background-color: #444;
-    padding: 20px;
-    border-radius: 10px;
-    color: #fff;
-    box-sizing: border-box;
+    bottom: 120px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #8861d2;
+    color: rgb(0, 0, 0);
+    border-radius: 50%; /*button is circular*/
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.add-trans-form ul,
-.remove-trans-form ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.add-trans-form li,
-.remove-trans-form li {
-    background-color: #444;
-    color: #fff;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    font-size: 24px; /*size of plus sign*/
     cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /*shadow effect*/
+    border: none; /*remove default border*/
+    z-index: 1000;
 }
 
-.form-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    margin-bottom: 5px;
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #000;
-    box-sizing: border-box;
-}
-
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 10px 0;
-}
-
-.form-header h1 {
-    margin: 0;
-    font-size: 1.7em;
-    flex-grow: 1;
-}
-
-.add-button,
-.remove-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ceb4ff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.add-button:hover,
-.remove-button:hover {
-    background-color: #b39fdb;
-}
-
-button {
-    font-family: 'Inter', sans-serif; /* Ensure consistent font */
-    outline: none; /* Remove outline */
-    box-shadow: none; /* Remove any box shadow */
-    transition: background-color 0.3s; /* Smooth transition for hover */
-}
-
-.close-button {
-    background-color: transparent;
-    color: #fff;
-    font-size: 24px;
-    border: none;
-    cursor: pointer;
-}
-
-.confirm-popup {
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
-    padding: 20px;
-    border-radius: 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+.add-transaction-button:hover, .add-transaction-button:focus {
+    background-color: #0056b3; /* Darker blue on hover/focus */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     color: white;
-    z-index: 1001;
-    width: 90%; /* Adjust as needed */
-    max-width: 300px;
+    text-decoration: none; /* Ensures no underline appears on hover */
 }
 
-.confirm-popup p {
-    margin-bottom: 20px;
-}
-
-.confirm-popup button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.confirm-popup button:first-of-type {
-    background-color: #ff4d4d;
-    color: white;
-}
-
-.confirm-popup button:last-of-type {
-    background-color: #ccc;
-    color: black;
-}
-
-.hidden {
-    display: none;
-}

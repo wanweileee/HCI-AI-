@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
                 label: 'Spendings',
-                data: [2500, 2300, 2200, 2100, 2200, totalSpending],
+                data: [800, 900, 1200, 1100, 1200, totalSpending],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -81,24 +81,93 @@ function closeModal() {
     document.getElementById('editModal').style.display = 'none';
 }
 
-function submitForm(event) {
-    event.preventDefault(); 
+function openAddExpenseModal() {
+    document.getElementById('addExpenseModal').style.display = 'block';
+}
 
-    var name = document.getElementById('categoryName').value;
-    var newLimit = document.getElementById('categoryLimit').value;
-    var categoryId = document.getElementById('editForm').dataset.categoryId;
+function closeAddExpenseModal() {
+    document.getElementById('addExpenseModal').style.display = 'none';
+}
 
-    var label = document.getElementById('label' + categoryId);
-    var details = document.getElementById('details' + categoryId);
-    var progressBar = document.getElementById('progress' + categoryId);
+function openDeductExpenseModal() {
+    document.getElementById('deductExpenseModal').style.display = 'block';
+}
+
+function closeDeductExpenseModal() {
+    document.getElementById('deductExpenseModal').style.display = 'none';
+}
+
+function checkCustomCategory() {
+    var categorySelect = document.getElementById('category');
+    var customInput = document.getElementById('customCategory');
+
+    if (categorySelect.value === 'Custom') {
+        customInput.style.display = 'block';
+    } else {
+        customInput.style.display = 'none';
+    }
+}
+
+function addExpense(event) {
+    event.preventDefault();
+
+    const categorySelect = document.getElementById('category');
+    const customCategoryInput = document.getElementById('customCategory');
+    const amountInput = document.getElementById('amount');
+
+    let category = categorySelect.value;
+    if (category === 'Custom') {
+        category = customCategoryInput.value;
+    }
+    const amount = parseFloat(amountInput.value);
+
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    transactions.push({ category, amount, date: new Date() });
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+
+    updateUI();
+    closeAddExpenseModal();
+}
+
+function deductExpense(event) {
+    event.preventDefault();
+
+    const categorySelect = document.getElementById('deductCategory');
+    const customCategoryInput = document.getElementById('deductCustomCategory');
+    const amountInput = document.getElementById('deductAmount');
+
+    let category = categorySelect.value;
+    if (category === 'Custom') {
+        category = customCategoryInput.value;
+    }
+    const amount = parseFloat(amountInput.value);
+
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    transactions.push({ category, amount: -amount, date: new Date() });
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+
+    updateUI();
+    closeDeductExpenseModal();
+}
+
+function submitEditForm(event) {
+    event.preventDefault();
+
+    const categoryName = document.getElementById('categoryName').value;
+    const categoryLimit = document.getElementById('categoryLimit').value;
+    const categoryId = document.getElementById('editForm').dataset.categoryId;
+
+    const label = document.getElementById('label' + categoryId);
+    const details = document.getElementById('details' + categoryId);
+    const progressBar = document.getElementById('progress' + categoryId);
 
     if (label && details && progressBar) {
-        label.textContent = name;
+        label.textContent = categoryName;
 
-        var currentSpend = details.textContent.split('/')[0].replace('$', '');
-        details.textContent = `$${currentSpend}/$${newLimit}`;
+        const currentSpend = details.textContent.split('/')[0].replace('$', '');
+        details.textContent = `$${currentSpend}/$${categoryLimit}`;
 
-        var spendPercentage = (parseFloat(currentSpend) / parseFloat(newLimit)) * 100;
+        const spendPercentage = (parseFloat(currentSpend) / parseFloat(categoryLimit)) * 100;
         progressBar.style.width = `${spendPercentage}%`;
     }
 
@@ -131,13 +200,7 @@ function updateUI() {
     }
 }
 
-function createCategoryBar(category, amount, limit) {
-    const defaultLimits = {
-        Food: 300,
-        Clothing: 400
-    };
-    limit = limit || defaultLimits[category] || 300; // Set limit based on default category limits or use 300 as fallback
-
+function createCategoryBar(category, amount, limit = 300) {
     let container = document.querySelector('.spending-categories');
     let newCategory = document.createElement('div');
     newCategory.className = 'category';
@@ -152,12 +215,3 @@ function createCategoryBar(category, amount, limit) {
     `;
     container.appendChild(newCategory);
 }
-
-
-/*
-// Clears all local storage
-localStorage.clear();
-
-// Clear a specific item in local storage
-localStorage.removeItem('keyName'); // Replace 'keyName' with the key you want to remove
-*/
