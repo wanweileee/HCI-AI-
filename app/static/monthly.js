@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
                 label: 'Spendings',
-                data: [800, 900, 1200, 1100, 1200, 450 + totalSpending],
+                data: [2500, 2300, 2200, 2100, 2200, totalSpending],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
