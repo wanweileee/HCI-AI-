@@ -59,7 +59,7 @@
                     <div class="progress-bar" id="progressFood" style="width: 66.67%;"></div>
                 </div>
                 <div class="category-details" id="detailsFood">$200/$300</div>
-                <button onclick="openModal('Food', '300', 'Food')">✎</button>
+                <button onclick="openModal('Food', 300, 'Food')">✎</button>
             </div>
             
             <div class="category" id="categoryClothing">
@@ -68,7 +68,7 @@
                     <div class="progress-bar" id="progressClothing" style="width: 62.5%;"></div>
                 </div>
                 <div class="category-details" id="detailsClothing">$250/$400</div>
-                <button onclick="openModal('Clothing', '400', 'Clothing')">✎</button>
+                <button onclick="openModal('Clothing', 400, 'Clothing')">✎</button>
             </div>
         </div>  
 
@@ -101,8 +101,61 @@
             </div>
         </div>
 
+        <!-- Modal for deducting an expense -->
+        <div id="deductExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeductExpenseModal()">&times;</span>
+                <h2 class="modal-title">Deduct Transaction</h2>
+                <form id="deductExpenseForm" onsubmit="deductExpense(event)">
+                    <div class="form-group">
+                        <label for="deductCategory">Category:</label>
+                        <select id="deductCategory" name="deductCategory" onchange="checkCustomCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Custom">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="deductCustomCategory" name="deductCustomCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="deductAmount">Amount:</label>
+                        <input type="number" id="deductAmount" name="deductAmount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Deduct</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for editing category details -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="modal-title">Edit Category</h2>
+                <form id="editForm" onsubmit="submitEditForm(event)">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name:</label>
+                        <input type="text" id="categoryName" name="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryLimit">Category Limit:</label>
+                        <input type="number" id="categoryLimit" name="categoryLimit" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <button class="add-transaction-button" aria-label="Add Transaction" onclick="openAddExpenseModal()">
             <i>+</i>
+        </button>
+        <button class="deduct-transaction-button" aria-label="Deduct Transaction" onclick="openDeductExpenseModal()">
+            <i>-</i>
         </button>
     </div>
 
@@ -137,6 +190,14 @@
             document.getElementById('addExpenseModal').style.display = 'none';
         }
 
+        function openDeductExpenseModal() {
+            document.getElementById('deductExpenseModal').style.display = 'block';
+        }
+
+        function closeDeductExpenseModal() {
+            document.getElementById('deductExpenseModal').style.display = 'none';
+        }
+
         function checkCustomCategory() {
             var categorySelect = document.getElementById('category');
             var customInput = document.getElementById('customCategory');
@@ -167,6 +228,51 @@
 
             updateUI();
             closeAddExpenseModal();
+        }
+
+        function deductExpense(event) {
+            event.preventDefault();
+            
+            const categorySelect = document.getElementById('deductCategory');
+            const customCategoryInput = document.getElementById('deductCustomCategory');
+            const amountInput = document.getElementById('deductAmount');
+
+            let category = categorySelect.value;
+            if (category === 'Custom') {
+                category = customCategoryInput.value;
+            }
+            const amount = parseFloat(amountInput.value);
+
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            transactions.push({ category, amount: -amount });
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            updateUI();
+            closeDeductExpenseModal();
+        }
+
+        function submitEditForm(event) {
+            event.preventDefault();
+            
+            const categoryName = document.getElementById('categoryName').value;
+            const categoryLimit = document.getElementById('categoryLimit').value;
+            const categoryId = document.getElementById('editForm').dataset.categoryId;
+
+            const label = document.getElementById('label' + categoryId);
+            const details = document.getElementById('details' + categoryId);
+            const progressBar = document.getElementById('progress' + categoryId);
+
+            if (label && details && progressBar) {
+                label.textContent = categoryName;
+
+                const currentSpend = details.textContent.split('/')[0].replace('$', '');
+                details.textContent = `$${currentSpend}/$${categoryLimit}`;
+
+                const spendPercentage = (parseFloat(currentSpend) / parseFloat(categoryLimit)) * 100;
+                progressBar.style.width = `${spendPercentage}%`;
+            }
+
+            closeModal();
         }
     </script>
 
