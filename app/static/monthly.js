@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     initializeDefaultCategories();
-    const totalSpending = getTotalSpending();
+    updateUI();
+    initializeChart();
+});
 
+function initializeChart() {
+    const totalSpending = getTotalSpending();
     const ctx = document.getElementById('spendingsChart').getContext('2d');
     const spendingsChart = new Chart(ctx, {
         type: 'bar',
@@ -39,25 +43,19 @@ document.addEventListener('DOMContentLoaded', function () {
             maintainAspectRatio: false
         }
     });
-
-    updateUI();
-});
+}
 
 function initializeDefaultCategories() {
-    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
     const defaultCategories = [
         { category: 'Food', amount: 200, limit: 300 },
         { category: 'Clothing', amount: 250, limit: 400 }
     ];
 
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
     defaultCategories.forEach(defaultCategory => {
-        if (!transactions.some(tx => tx.category === defaultCategory.category)) {
-            transactions.push(defaultCategory);
-        } else {
-            // Update the existing default category amounts
-            transactions = transactions.map(tx => 
-                tx.category === defaultCategory.category ? { ...tx, amount: defaultCategory.amount } : tx
-            );
+        if (!transactions.some(tx => tx.category === defaultCategory.category && tx.date === 'default')) {
+            transactions.push({ category: defaultCategory.category, amount: defaultCategory.amount, limit: defaultCategory.limit, date: 'default' });
         }
     });
 
@@ -122,7 +120,7 @@ function addExpense(event) {
     const amount = parseFloat(amountInput.value);
 
     let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    transactions.push({ category, amount, date: new Date() });
+    transactions.push({ category, amount, date: new Date().toISOString() });
     localStorage.setItem('transactions', JSON.stringify(transactions));
 
     updateUI();
@@ -143,7 +141,7 @@ function deductExpense(event) {
     const amount = parseFloat(amountInput.value);
 
     let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    transactions.push({ category, amount: -amount, date: new Date() });
+    transactions.push({ category, amount: -amount, date: new Date().toISOString() });
     localStorage.setItem('transactions', JSON.stringify(transactions));
 
     updateUI();
@@ -181,10 +179,12 @@ function updateUI() {
 
     transactions.forEach(tx => {
         totalSpending += tx.amount;
-        if (categories[tx.category]) {
-            categories[tx.category] += tx.amount;
-        } else {
-            categories[tx.category] = tx.amount;
+        if (!categories[tx.category]) {
+            categories[tx.category] = { amount: 0, limit: tx.limit };
+        }
+        categories[tx.category].amount += tx.amount;
+        if (tx.limit) {
+            categories[tx.category].limit = tx.limit;
         }
     });
 
@@ -196,11 +196,15 @@ function updateUI() {
     container.innerHTML = ''; // Clear the container
 
     for (let category in categories) {
-        createCategoryBar(category, categories[category]);
+        createCategoryBar(category, categories[category].amount, categories[category].limit);
     }
 }
 
-function createCategoryBar(category, amount, limit = 300) {
+function createCategoryBar(category, amount, limit) {
+    if (typeof limit === 'undefined') {
+        limit = 300; // Default limit if undefined
+    }
+
     let container = document.querySelector('.spending-categories');
     let newCategory = document.createElement('div');
     newCategory.className = 'category';
@@ -215,3 +219,4 @@ function createCategoryBar(category, amount, limit = 300) {
     `;
     container.appendChild(newCategory);
 }
+

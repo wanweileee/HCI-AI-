@@ -49,25 +49,8 @@
             </div>
         </div>
 
-        <div class="spending-categories">
-            <!-- Default categories -->
-            <div class="category" id="categoryFood">
-                <label id="labelFood">Food</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressFood" style="width: 40%;"></div>
-                </div>
-                <div class="category-details" id="detailsFood">$40/$100</div>
-                <button onclick="openModal('Food', 100, 'Food')">✎</button>
-            </div>
-            
-            <div class="category" id="categoryClothing">
-                <label id="labelClothing">Clothing</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressClothing" style="width: 25%;"></div>
-                </div>
-                <div class="category-details" id="detailsClothing">$25/$100</div>
-                <button onclick="openModal('Clothing', 100, 'Clothing')">✎</button>
-            </div>
+        <div class="spending-categories" id="spendingCategories">
+            <!-- Categories will be dynamically populated -->
         </div>  
 
         <!-- Modal for adding a new expense -->
@@ -167,124 +150,142 @@
                 window.location.href = '/monthly';
             }
         }
-
+    
         function openModal(categoryName, categoryLimit, categoryId) {
             document.getElementById('categoryName').value = categoryName;
             document.getElementById('categoryLimit').value = categoryLimit;
             document.getElementById('editModal').style.display = 'block';
-
+    
             document.getElementById('editForm').dataset.categoryId = categoryId;
         }
-
+    
         function closeModal() {
             document.getElementById('editModal').style.display = 'none';
         }
-
+    
         function openAddExpenseModal() {
             document.getElementById('addExpenseModal').style.display = 'block';
         }
-
+    
         function closeAddExpenseModal() {
             document.getElementById('addExpenseModal').style.display = 'none';
         }
-
+    
         function openDeductExpenseModal() {
             document.getElementById('deductExpenseModal').style.display = 'block';
         }
-
+    
         function closeDeductExpenseModal() {
             document.getElementById('deductExpenseModal').style.display = 'none';
         }
-
+    
         function checkCustomCategory() {
             var categorySelect = document.getElementById('category');
             var customInput = document.getElementById('customCategory');
-        
+    
             if (categorySelect.value === 'Custom') {
                 customInput.style.display = 'block';
             } else {
                 customInput.style.display = 'none';
             }
         }
-
+    
         function addExpense(event) {
             event.preventDefault();
-            
+    
             const categorySelect = document.getElementById('category');
             const customCategoryInput = document.getElementById('customCategory');
             const amountInput = document.getElementById('amount');
-
+    
             let category = categorySelect.value;
             if (category === 'Custom') {
                 category = customCategoryInput.value;
             }
             const amount = parseFloat(amountInput.value);
-
+    
             let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
             transactions.push({ category, amount, date: new Date() });
             localStorage.setItem('transactions', JSON.stringify(transactions));
-
+    
             updateUI();
             closeAddExpenseModal();
         }
-
+    
         function deductExpense(event) {
             event.preventDefault();
-            
+    
             const categorySelect = document.getElementById('deductCategory');
             const customCategoryInput = document.getElementById('deductCustomCategory');
             const amountInput = document.getElementById('deductAmount');
-
+    
             let category = categorySelect.value;
             if (category === 'Custom') {
                 category = customCategoryInput.value;
             }
             const amount = parseFloat(amountInput.value);
-
+    
             let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
             transactions.push({ category, amount: -amount, date: new Date() });
             localStorage.setItem('transactions', JSON.stringify(transactions));
-
+    
             updateUI();
             closeDeductExpenseModal();
         }
-
+    
         function submitEditForm(event) {
             event.preventDefault();
-            
+    
             const categoryName = document.getElementById('categoryName').value;
             const categoryLimit = document.getElementById('categoryLimit').value;
             const categoryId = document.getElementById('editForm').dataset.categoryId;
-
+    
             const label = document.getElementById('label' + categoryId);
             const details = document.getElementById('details' + categoryId);
             const progressBar = document.getElementById('progress' + categoryId);
-
+    
             if (label && details && progressBar) {
                 label.textContent = categoryName;
-
+    
                 const currentSpend = details.textContent.split('/')[0].replace('$', '');
                 details.textContent = `$${currentSpend}/$${categoryLimit}`;
-
+    
                 const spendPercentage = (parseFloat(currentSpend) / parseFloat(categoryLimit)) * 100;
                 progressBar.style.width = `${spendPercentage}%`;
             }
-
+    
             closeModal();
         }
-
+    
         document.addEventListener('DOMContentLoaded', function() {
+            initializeDefaultCategories();
             updateUI();
         });
-
+    
+        function initializeDefaultCategories() {
+            const defaultCategories = [
+                { category: 'Food', amount: 40, limit: 100 },
+                { category: 'Clothing', amount: 25, limit: 100 }
+            ];
+    
+            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    
+            defaultCategories.forEach(defaultCategory => {
+                if (!transactions.some(tx => tx.category === defaultCategory.category)) {
+                    transactions.push({ category: defaultCategory.category, amount: defaultCategory.amount, limit: defaultCategory.limit, date: new Date() });
+                }
+            });
+    
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+    
         function updateUI() {
             let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
             let totalSpending = 0;
             let categories = {};
-
+    
             // Filter transactions for the current week
             const currentWeekTransactions = transactions.filter(tx => isThisWeek(new Date(tx.date)));
-
+    
             currentWeekTransactions.forEach(tx => {
                 totalSpending += tx.amount;
                 if (categories[tx.category]) {
@@ -293,19 +294,19 @@
                     categories[tx.category] = tx.amount;
                 }
             });
-
+    
             document.querySelector('.current-spending').innerHTML = `Total spending:<br>$${totalSpending}`;
             document.querySelector('.money-out').textContent = ` -$${totalSpending}`;
-
+    
             // Clear and recreate the category elements to avoid duplicates
             const container = document.querySelector('.spending-categories');
             container.innerHTML = ''; // Clear the container
-
+    
             for (let category in categories) {
                 createCategoryBar(category, categories[category]);
             }
         }
-
+    
         function createCategoryBar(category, amount, limit = 100) {
             let container = document.querySelector('.spending-categories');
             let newCategory = document.createElement('div');
@@ -321,17 +322,16 @@
             `;
             container.appendChild(newCategory);
         }
-
+    
         function isThisWeek(date) {
             const today = new Date();
             const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
             const lastDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
             return date >= firstDayOfWeek && date <= lastDayOfWeek;
         }
-    </script>
+    </script>    
 
     <script src="{{ url_for('static', filename='weekly.js') }}"></script>
 </body>
 </html>
 {% endblock %}
-

@@ -39,3 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+/*
+// Clears all local storage
+localStorage.clear();
+
+// Clear a specific item in local storage
+localStorage.removeItem('keyName'); // Replace 'keyName' with the key you want to remove
+*/
