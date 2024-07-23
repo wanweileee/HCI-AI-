@@ -361,3 +361,23 @@ input[type="text"], input[type="number"] {
     text-decoration: none; /* Ensures no underline appears on hover */
 }
 
+/*toggle bar*/
+.toggle-bar {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.toggle-button {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #cbcbcb;
+}
+.toggle-button.active {
+    background-color: #858585;
+    font-weight: bold;
+}
+
+

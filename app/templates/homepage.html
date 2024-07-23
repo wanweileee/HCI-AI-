@@ -15,7 +15,7 @@
         <header>
             <h1>Spendings</h1>
             <h2>Weekly Analysis</h2>
-            <div class="dropdowns">
+            <!-- <div class="dropdowns">
                 <select id="viewSelector" class="dropdown" onchange="navigateToView()">
                     <option value="monthly">Month</option>
                     <option value="weekly" selected>Week</option>
@@ -26,8 +26,14 @@
                     <option value="week3">Week 3</option>
                     <option value="week4">Week 4</option>
                 </select>
-            </div>
+            </div> -->
         </header>
+
+        <!-- Toggle bar for switching views -->
+        <div class="toggle-bar">
+            <div class="toggle-button active" id="monthlyToggle" onclick="toggleView('monthly')">Monthly</div>
+            <div class="toggle-button" id="weeklyToggle" onclick="toggleView('weekly')">Weekly</div>
+        </div>
 
         <!-- Your weekly analysis content here -->
         <div class="spendings-info">
@@ -141,15 +147,43 @@
     </div>
 
     <script>
-        function navigateToView() {
-            const viewSelector = document.getElementById('viewSelector');
-            const selectedValue = viewSelector.value;
-            if (selectedValue === 'weekly') {
-                window.location.href = '/weekly';
-            } else if (selectedValue === 'monthly') {
+        // function navigateToView() {
+        //     const viewSelector = document.getElementById('viewSelector');
+        //     const selectedValue = viewSelector.value;
+        //     if (selectedValue === 'weekly') {
+        //         window.location.href = '/weekly';
+        //     } else if (selectedValue === 'monthly') {
+        //         window.location.href = '/monthly';
+        //     }
+        // }
+
+        function toggleView(view) {
+            if (view === 'weekly') {
+                window.location.href = '/';
+            } else {
                 window.location.href = '/monthly';
             }
         }
+
+        function clearLocalStorage() {
+            localStorage.clear();
+            alert('Local storage has been cleared.');
+            // Refresh the page to see the effect
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const path = window.location.pathname;
+            if (path.includes('weekly')) {
+                document.getElementById('weeklyToggle').classList.add('active');
+                document.getElementById('monthlyToggle').classList.remove('active');
+            } else {
+                document.getElementById('monthlyToggle').classList.add('active');
+                document.getElementById('weeklyToggle').classList.remove('active');
+            }
+        });
+
+
     
         function openModal(categoryName, categoryLimit, categoryId) {
             document.getElementById('categoryName').value = categoryName;
