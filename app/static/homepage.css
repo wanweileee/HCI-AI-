@@ -374,11 +374,11 @@ input[type="text"], input[type="number"] {
     padding: 10px;
     cursor: pointer;
     border: 1px solid #ccc;
-    background-color: #cbcbcb;
+    background-color: #c0c0c0;
 }
 .toggle-button{
-    background-color: #858585;
     font-weight: bold;
+    background-color: #858585;
     flex: 1;
     text-align: center;
     padding: 10px;

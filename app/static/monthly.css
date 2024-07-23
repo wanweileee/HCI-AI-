@@ -373,7 +373,7 @@ input[type="text"], input[type="number"] {
     padding: 10px;
     cursor: pointer;
     border: 1px solid #ccc;
-    background-color: #cbcbcb;
+    background-color: #c0c0c0;
 }
 .toggle-button.active {
     background-color: #858585;
