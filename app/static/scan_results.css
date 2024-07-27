@@ -32,7 +32,7 @@ body {
     border-radius: 5px;
     text-align: left;
     font-size: 1rem;
-    color: #fff;
+    color: #444;
     overflow-x: auto;
     white-space: pre-wrap; /* Ensure long lines break and wrap */
 }
@@ -40,6 +40,7 @@ body {
 .container h3 {
     margin-top: 1.5rem;
     font-size: 1.5rem;
+    color: white; /* Set the header text color to white */
 }
 
 .container ul {
@@ -53,6 +54,10 @@ body {
     padding: 0.5rem;
     border-radius: 5px;
     text-align: left;
+}
+
+table th {
+    color: black; /* Set the table header text color to black */
 }
 
 /* Media Queries for Responsiveness */
