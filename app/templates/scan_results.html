@@ -1,26 +1,94 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website Title</title>
+    <title>Scan Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='scan_results.css') }}">
 </head>
-
-<div class="container">
-    <h2>Scan Result</h2>
-    <p>Recognized Text:</p>
-    <pre>{{ text }}</pre>
-    <h3>Categorized Expenses:</h3>
-    <ul>
-        <li>Food: {{ categories.Food }}</li>
-        <li>Transport: {{ categories.Transport }}</li>
-        <li>Entertainment: {{ categories.Entertainment }}</li>
-        <li>Shopping: {{ categories.Shopping }}</li>
-        <li>Groceries: {{ categories.Groceries }}</li>
-        <li>Others: {{ categories.Others }}</li>
-    </ul>
-</div>
+<body>
+    <div class="container">
+        <h3>Categorized Expenses</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Item</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="6">Food</td>
+                    <td>Beef Cubes</td>
+                    <td>$40</td>
+                </tr>
+                <tr>
+                    <td>Filet Mignon</td>
+                    <td>$20</td>
+                </tr>
+                <tr>
+                    <td>Pokka Green Tea</td>
+                    <td>$10</td>
+                </tr>
+                <tr>
+                    <td>Butter Cookies</td>
+                    <td>$20</td>
+                </tr>
+                <tr>
+                    <td>Muffin</td>
+                    <td>$10</td>
+                </tr>
+                <tr>
+                    <td>Jap Bento</td>
+                    <td>$15</td>
+                </tr>
+                <tr>
+                    <td>Transport</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td>Entertainment</td>
+                    <td>Mario Kart 8</td>
+                    <td>$80</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Shopping</td>
+                    <td>T-shirt</td>
+                    <td>$30</td>
+                </tr>
+                <tr>
+                    <td>Floral Pants</td>
+                    <td>$40</td>
+                </tr>
+                <tr>
+                    <td>Christmas Tree</td>
+                    <td>$200</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Groceries</td>
+                    <td>Large Eggs</td>
+                    <td>$5</td>
+                </tr>
+                <tr>
+                    <td>Cabbage</td>
+                    <td>$15</td>
+                </tr>
+                <tr>
+                    <td>Grapes</td>
+                    <td>$5</td>
+                </tr>
+                <tr>
+                    <td>Others</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tbody>
+        </table>
+        <h5>Total: $490</h5>
+    </div>
+</body>
+</html>
 {% endblock %}
-
