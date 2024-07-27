@@ -15,19 +15,17 @@
         <header>
             <h1>Spendings</h1>
             <h2>Weekly Analysis</h2>
-            <!-- <div class="dropdowns">
-                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
-                    <option value="monthly">Month</option>
-                    <option value="weekly" selected>Week</option>
-                </select>
-                <select id="weekSelector" class="dropdown" onchange="navigateToView()">
-                    <option value="week1">Week 1</option>
-                    <option value="week2">Week 2</option>
-                    <option value="week3">Week 3</option>
-                    <option value="week4">Week 4</option>
-                </select>
-            </div> -->
         </header>
+
+        <!-- Notification Modal -->
+        <div id="notificationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeNotificationModal()">&times;</span>
+                <h2 class="modal-title">Notification</h2>
+                <p id="notificationMessage"></p>
+                <button class="submit-button" onclick="closeNotificationModal()">OK</button>
+            </div>
+        </div>
 
         <!-- Toggle bar for switching views -->
         <div class="toggle-bar">
@@ -35,10 +33,10 @@
             <div class="toggle-button active" id="monthlyToggle" onclick="toggleView('monthly')">Monthly</div>
         </div>
 
-        <!-- Your weekly analysis content here -->
+        <!-- Weekly analysis content -->
         <div class="spendings-info">
-            <div class="current-spending">Total spending:</br>$120</div>
-            <div class="avg-spending">Avg/Day:</br> $17</div>
+            <div class="current-spending">Total spending:<br>$<span id="totalSpending">0</span></div>
+            <div class="avg-spending">Avg/Day:<br>$<span id="avgSpending">0</span></div>
         </div>
         <div class="chart-container">
             <canvas id="spendingsChart"></canvas>
@@ -47,11 +45,11 @@
         <div class="money-summary">
             <div class="money-entry">
                 <span class="money-label">Money In</span>
-                <span class="money-value">+ $500</span>
+                <span class="money-value" id="moneyIn">+ $0</span>
             </div>
             <div class="money-entry">
                 <span class="money-label">Money Out</span>
-                <span class="money-out">- $120</span>
+                <span class="money-out" id="moneyOut">- $0</span>
             </div>
         </div>
 
@@ -145,225 +143,6 @@
             <i>-</i>
         </button>
     </div>
-
-    <script>
-        // function navigateToView() {
-        //     const viewSelector = document.getElementById('viewSelector');
-        //     const selectedValue = viewSelector.value;
-        //     if (selectedValue === 'weekly') {
-        //         window.location.href = '/weekly';
-        //     } else if (selectedValue === 'monthly') {
-        //         window.location.href = '/monthly';
-        //     }
-        // }
-
-        function toggleView(view) {
-            if (view === 'weekly') {
-                window.location.href = '/';
-            } else {
-                window.location.href = '/monthly';
-            }
-        }
-
-        function clearLocalStorage() {
-            localStorage.clear();
-            alert('Local storage has been cleared.');
-            // Refresh the page to see the effect
-            window.location.reload();
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const path = window.location.pathname;
-            if (path.includes('weekly')) {
-                document.getElementById('weeklyToggle').classList.add('active');
-                document.getElementById('monthlyToggle').classList.remove('active');
-            } else {
-                document.getElementById('monthlyToggle').classList.add('active');
-                document.getElementById('weeklyToggle').classList.remove('active');
-            }
-        });
-
-
-    
-        function openModal(categoryName, categoryLimit, categoryId) {
-            document.getElementById('categoryName').value = categoryName;
-            document.getElementById('categoryLimit').value = categoryLimit;
-            document.getElementById('editModal').style.display = 'block';
-    
-            document.getElementById('editForm').dataset.categoryId = categoryId;
-        }
-    
-        function closeModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-    
-        function openAddExpenseModal() {
-            document.getElementById('addExpenseModal').style.display = 'block';
-        }
-    
-        function closeAddExpenseModal() {
-            document.getElementById('addExpenseModal').style.display = 'none';
-        }
-    
-        function openDeductExpenseModal() {
-            document.getElementById('deductExpenseModal').style.display = 'block';
-        }
-    
-        function closeDeductExpenseModal() {
-            document.getElementById('deductExpenseModal').style.display = 'none';
-        }
-    
-        function checkCustomCategory() {
-            var categorySelect = document.getElementById('category');
-            var customInput = document.getElementById('customCategory');
-    
-            if (categorySelect.value === 'Custom') {
-                customInput.style.display = 'block';
-            } else {
-                customInput.style.display = 'none';
-            }
-        }
-    
-        function addExpense(event) {
-            event.preventDefault();
-    
-            const categorySelect = document.getElementById('category');
-            const customCategoryInput = document.getElementById('customCategory');
-            const amountInput = document.getElementById('amount');
-    
-            let category = categorySelect.value;
-            if (category === 'Custom') {
-                category = customCategoryInput.value;
-            }
-            const amount = parseFloat(amountInput.value);
-    
-            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            transactions.push({ category, amount, date: new Date() });
-            localStorage.setItem('transactions', JSON.stringify(transactions));
-    
-            updateUI();
-            closeAddExpenseModal();
-        }
-    
-        function deductExpense(event) {
-            event.preventDefault();
-    
-            const categorySelect = document.getElementById('deductCategory');
-            const customCategoryInput = document.getElementById('deductCustomCategory');
-            const amountInput = document.getElementById('deductAmount');
-    
-            let category = categorySelect.value;
-            if (category === 'Custom') {
-                category = customCategoryInput.value;
-            }
-            const amount = parseFloat(amountInput.value);
-    
-            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            transactions.push({ category, amount: -amount, date: new Date() });
-            localStorage.setItem('transactions', JSON.stringify(transactions));
-    
-            updateUI();
-            closeDeductExpenseModal();
-        }
-    
-        function submitEditForm(event) {
-            event.preventDefault();
-    
-            const categoryName = document.getElementById('categoryName').value;
-            const categoryLimit = document.getElementById('categoryLimit').value;
-            const categoryId = document.getElementById('editForm').dataset.categoryId;
-    
-            const label = document.getElementById('label' + categoryId);
-            const details = document.getElementById('details' + categoryId);
-            const progressBar = document.getElementById('progress' + categoryId);
-    
-            if (label && details && progressBar) {
-                label.textContent = categoryName;
-    
-                const currentSpend = details.textContent.split('/')[0].replace('$', '');
-                details.textContent = `$${currentSpend}/$${categoryLimit}`;
-    
-                const spendPercentage = (parseFloat(currentSpend) / parseFloat(categoryLimit)) * 100;
-                progressBar.style.width = `${spendPercentage}%`;
-            }
-    
-            closeModal();
-        }
-    
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDefaultCategories();
-            updateUI();
-        });
-    
-        function initializeDefaultCategories() {
-            const defaultCategories = [
-                { category: 'Food', amount: 40, limit: 100 },
-                { category: 'Clothing', amount: 25, limit: 100 }
-            ];
-    
-            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    
-            defaultCategories.forEach(defaultCategory => {
-                if (!transactions.some(tx => tx.category === defaultCategory.category)) {
-                    transactions.push({ category: defaultCategory.category, amount: defaultCategory.amount, limit: defaultCategory.limit, date: new Date() });
-                }
-            });
-    
-            localStorage.setItem('transactions', JSON.stringify(transactions));
-        }
-    
-        function updateUI() {
-            let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            let totalSpending = 0;
-            let categories = {};
-    
-            // Filter transactions for the current week
-            const currentWeekTransactions = transactions.filter(tx => isThisWeek(new Date(tx.date)));
-    
-            currentWeekTransactions.forEach(tx => {
-                totalSpending += tx.amount;
-                if (categories[tx.category]) {
-                    categories[tx.category] += tx.amount;
-                } else {
-                    categories[tx.category] = tx.amount;
-                }
-            });
-    
-            document.querySelector('.current-spending').innerHTML = `Total spending:<br>$${totalSpending}`;
-            document.querySelector('.money-out').textContent = ` -$${totalSpending}`;
-    
-            // Clear and recreate the category elements to avoid duplicates
-            const container = document.querySelector('.spending-categories');
-            container.innerHTML = ''; // Clear the container
-    
-            for (let category in categories) {
-                createCategoryBar(category, categories[category]);
-            }
-        }
-    
-        function createCategoryBar(category, amount, limit = 100) {
-            let container = document.querySelector('.spending-categories');
-            let newCategory = document.createElement('div');
-            newCategory.className = 'category';
-            newCategory.id = `category${category}`; // Ensure unique ID
-            newCategory.innerHTML = `
-                <label id="label${category}">${category}</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progress${category}" style="width: ${Math.min((amount / limit) * 100, 100)}%;"></div>
-                </div>
-                <div class="category-details" id="details${category}">$${amount}/$${limit}</div>
-                <button onclick="openModal('${category}', '${limit}', '${category}')">✎</button>
-            `;
-            container.appendChild(newCategory);
-        }
-    
-        function isThisWeek(date) {
-            const today = new Date();
-            const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
-            const lastDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
-            return date >= firstDayOfWeek && date <= lastDayOfWeek;
-        }
-    </script>    
 
     <script src="{{ url_for('static', filename='weekly.js') }}"></script>
 </body>
