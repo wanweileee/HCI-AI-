@@ -7,32 +7,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings Page</title>
-    <link rel="stylesheet" href="static/settings.css">
+    <link rel="stylesheet" href="../static/settings.css">
 </head>
 <body>
     <div class="settings-container">
         <div class="profile-section">
-            <img src="static/image/profile.png" alt="User Profile" class="profile-image">
+            <img src="../static/image/profile.png" alt="User Profile" class="profile-image">
             <div class="username">User123</div>
         </div>
         <div class="settings-option">
-            <img src="static/image/account.png" alt="Account">
+            <img src="../static/image/account.png" alt="Account">
             <span>Account</span>
         </div>
         <div class="settings-option">
-            <img src="static/image/privacy.png" alt="Privacy">
+            <img src="../static/image/privacy.png" alt="Privacy">
             <span>Privacy</span>
         </div>
         <div class="settings-option">
-            <img src="static/image/notification.png" alt="Notifications">
+            <img src="../static/image/notification.png" alt="Notifications">
             <span>Notifications</span>
         </div>
-        <div class="logout-section" onclick="logout()">
-            <img src="static/image/logout.png" alt="Log Out">
+        <div class="logout-section" id="logoutButton" data-id= "{{id}}">
+            <img src="../static/image/logout.png" alt="Log Out">
             <span>Log out</span>
         </div>
+
     </div>
-    <script src="static/settings.js"></script>
+    <script src="../static/settings.js"></script>
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function() {
+        const element = this;
+        const postId = element.getAttribute('data-id'); // Retrieve the ID from data attribute
+        const url = '/more/' + postId; // Use template literals to include the ID in the URL
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: 'User requested to log out', // Add any necessary data here
+                id: postId // Including the ID in the body if needed
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                    window.location.href = '/';
+            } else {
+                 alert('Failed to delete user: ' + data.message);
+            }
+
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+    </script>
 </body>
 </html>
 

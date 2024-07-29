@@ -107,11 +107,11 @@
     {% block navbar %}
     <nav class="navbar fixed-bottom navbar-expand">
         <div class="container-fluid d-flex justify-content-between">
-            <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</a>
+            <a href="{{ url_for('main.home', ids=id) }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</a>
             <a href="/scan" class="nav-item"><i class="fas fa-crosshairs"></i><span>Scan</span></a>
             <a href="/goals" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
-            <a href="/planning" class="nav-item"><i class="fas fa-clock"></i><span>Planning</span></a>
-            <a href="/more" class="nav-item"><i class="fas fa-ellipsis-h"></i><span>More</span></a>
+            <a href="{{ url_for('main.planning', ids=id) }}" class="nav-item"><i class="fas fa-clock"></i><span>Planning</span></a>
+            <a href="{{ url_for('main.settings', ids=id) }}" class="nav-item"><i class="fas fa-ellipsis-h"></i><span>More</span></a>
         </div>
     </nav>
     {% endblock navbar %}

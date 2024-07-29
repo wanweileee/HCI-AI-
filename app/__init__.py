@@ -1,6 +1,6 @@
 from flask import Flask
 from .extensions import db
-from .models import Payment
+from .models import Payment, Transaction
 
 def create_app():
     app = Flask(__name__)

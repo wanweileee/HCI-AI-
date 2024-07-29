@@ -4,23 +4,70 @@ function getTotalSpending() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('categoriesContainer');
+    const categories = JSON.parse(document.getElementById('categoriesContainer').getAttribute('data-information'));
+    categories.forEach(category => {
+        const percent = (category.spent / category.limit) * 100;
+
+        // Create elements
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'category';
+
+        const label = document.createElement('label');
+        label.id = `label${category.name}`;
+        label.textContent = category.name;
+
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-container';
+
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        progressBar.id = `progress${category.name}`;
+        progressBar.style.width = `${percent}%`;
+
+        const categoryDetails = document.createElement('div');
+        categoryDetails.className = 'category-details';
+        categoryDetails.id = `details${category.name}`;
+        categoryDetails.textContent = `$${category.spent}/$${category.limit}`;
+
+        const editButton = document.createElement('button');
+        editButton.onclick = function() { openModal(category.name, category.limit, category.name); };
+        editButton.textContent = '✎';
+
+        // Assemble the category div
+        progressContainer.appendChild(progressBar);
+        categoryDiv.appendChild(label);
+        categoryDiv.appendChild(progressContainer);
+        categoryDiv.appendChild(categoryDetails);
+        categoryDiv.appendChild(editButton);
+
+        // Append to container
+        container.appendChild(categoryDiv);
+    });
+
     const totalSpending = getTotalSpending(); // Ensure this is called here
 
+    const label = JSON.parse(document.getElementById('spendingsChart').getAttribute('data-Label'));
+    const data = JSON.parse(document.getElementById('spendingsChart').getAttribute('data-amount'));
+
     const ctx = document.getElementById('spendingsChart').getContext('2d');
+    
+    
     const spendingsChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: label,
             datasets: [{
                 label: 'Spendings',
-                data: [800, 900, 1200, 1100, 1200, 450 + totalSpending],
+                data: data,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
                     'rgba(255, 206, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
                     'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(54, 159, 64, 0.2)'
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -28,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(54, 159, 64, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -47,11 +95,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function openModal(categoryName, categoryLimit, categoryId) {
-    document.getElementById('categoryName').value = categoryName;
-    document.getElementById('categoryLimit').value = categoryLimit;
-    document.getElementById('editModal').style.display = 'block';
+    console.log(categoryName, categoryLimit, categoryId);
+    // document.getElementById('categoryName').value = categoryName;
+    // document.getElementById('categoryLimit').value = categoryLimit;
+    // document.getElementById('editModal').style.display = 'block';
 
-    document.getElementById('editForm').dataset.categoryId = categoryId;
+    // document.getElementById('editForm').dataset.categoryId = categoryId;
+    const nameInput = document.getElementById('categoryName');
+    const limitInput = document.getElementById('categoryLimit');
+    const modal = document.getElementById('editModal');
+    const form = document.getElementById('editForm');
+
+    if (nameInput && limitInput && modal && form) {
+        nameInput.value = categoryName;
+        limitInput.value = categoryLimit;
+        modal.style.display = 'block';
+        form.dataset.categoryId = categoryId;
+    } else {
+        console.error('One or more modal elements are missing!');
+    }
 }
 
 function closeModal() {
@@ -69,16 +131,43 @@ function submitForm(event) {
     var details = document.getElementById('details' + categoryId);
     var progressBar = document.getElementById('progress' + categoryId);
 
-    if (label && details && progressBar) {
-        label.textContent = name;
+    var data = {
+        name: name,
+        newLimit: newLimit,
+        categoryId: categoryId
+    };
 
-        // Extract current spending from the details and update only the limit part
-        var currentSpend = details.textContent.split('/')[0].replace('$', ''); // Gets current spend removing '$'
-        details.textContent = `$${currentSpend}/$${newLimit}`; // Updates with new limit
+    // Send the POST request to the same URL
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeModal();
+            window.location.href = '/monthly/' + data.id;
+        } else {
+            alert('Failed to delete user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 
-        var spendPercentage = (parseFloat(currentSpend) / parseFloat(newLimit)) * 100;
-        progressBar.style.width = `${spendPercentage}%`;
-    }
+    // if (label && details && progressBar) {
+    //     label.textContent = name;
+
+    //     // Extract current spending from the details and update only the limit part
+    //     var currentSpend = details.textContent.split('/')[0].replace('$', ''); // Gets current spend removing '$'
+    //     details.textContent = `$${currentSpend}/$${newLimit}`; // Updates with new limit
+
+    //     var spendPercentage = (parseFloat(currentSpend) / parseFloat(newLimit)) * 100;
+    //     progressBar.style.width = `${spendPercentage}%`;
+    // }
 
     closeModal();
 }
@@ -104,8 +193,9 @@ function updateUI() {
     });
 
     // Update total spending and money out
-    document.querySelector('.current-spending').innerHTML = `Total spending:<br>$${450 + totalSpending}`;
-    document.querySelector('.money-out').textContent = ` -$${450 + totalSpending}`;
+    //console.log(totalSpending);
+    //document.querySelector('.current-spending').innerHTML = `Total spending:<br>$${450 + totalSpending}`;
+    //document.querySelector('.money-out').textContent = ` -$${450 + totalSpending}`;
 
     // Update categories
     for (let category in categories) {
@@ -151,10 +241,9 @@ function createCategoryBar(category, amount) {
     container.appendChild(newCategory);
 }
 
-/*
-// Clears all local storage
-localStorage.clear();
 
-// Clear a specific item in local storage
-localStorage.removeItem('keyName'); // Replace 'keyName' with the key you want to remove
-*/
+// // Clears all local storage
+// localStorage.clear();
+
+// // Clear a specific item in local storage
+// localStorage.removeItem('keyName'); // Replace 'keyName' with the key you want to remove

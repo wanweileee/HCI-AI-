@@ -37,6 +37,24 @@ const centerTextPlugin = {
     }
 };
 
+// Function to generate a random pastel colour
+function generatePastelColourHex() {
+    const r = Math.floor((Math.random() * 127) + 127).toString(16).padStart(2, '0');
+    const g = Math.floor((Math.random() * 127) + 127).toString(16).padStart(2, '0');
+    const b = Math.floor((Math.random() * 127) + 127).toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
+}
+
+// Function to get a unique pastel colour
+function getUniquePastelColourHex() {
+    let colour;
+    do {
+        colour = generatePastelColourHex();
+    } while (Object.values(labelColours).includes(colour));
+    return colour;
+}
+
+
 function formatCurrency(value) {
     return value%1 == 0 ? value.toString() : value.toFixed(2);
 }

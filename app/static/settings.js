@@ -12,5 +12,5 @@ function goToNotifications() {
 
 function logout() {
     // Code to handle logout
-    window.location.href = '/login'; // Path to the login page
+    window.location.href = '/'; // Path to the login page
 }

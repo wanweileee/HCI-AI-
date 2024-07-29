@@ -16,28 +16,29 @@
             <h1>Spendings</h1>
             <h2>Monthly Analysis</h2>
             <div class="dropdowns">
-                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
+                <select id="viewSelector" class="dropdown" onchange="navigateToView({{id}})">
                     <option value="monthly">Month</option>
                     <option value="weekly">Week</option>
                 </select>
-                <select id="monthSelector" class="dropdown" onchange="navigateToView()">
-                    <option value="january">Jan</option>
-                    <option value="february">Feb</option>
-                    <option value="march">Mar</option>
-                    <option value="april">Apr</option>
-                    <option value="may">May</option>
-                    <option value="june" selected>Jun</option>
+                <select id="monthSelector" class="dropdown" onchange="navigateToView({{id}})">
+                    <option value="January" {{ 'selected' if month == 'January' else '' }}>Jan</option>
+                    <option value="February" {{ 'selected' if month == 'February' else '' }}>Feb</option>
+                    <option value="March" {{ 'selected' if month == 'March' else '' }}>Mar</option>
+                    <option value="April" {{ 'selected' if month == 'April' else '' }}>Apr</option>
+                    <option value="May" {{ 'selected' if month == 'May' else '' }}>May</option>
+                    <option value="June" {{ 'selected' if month == 'June' else '' }}>Jun</option>
+                    <option value="July" {{ 'selected' if month == 'July' else '' }}>Jul</option>
                 </select>
             </div>
         </header>
 
         <!-- Your monthly analysis content here -->
         <div class="spendings-info">
-            <div class="current-spending">Total spending:</br>$530</div>
-            <div class="avg-spending">Avg/Week:</br> $265</div>
+            <div class="current-spending">Total spending:</br>{{totalspent}}</div>
+            <div class="avg-spending">Avg/Week:</br> {{avgspent}}</div>
         </div>
         <div class="chart-container">
-            <canvas id="spendingsChart"></canvas>
+            <canvas id="spendingsChart" , data-Label= '{{month_display}}', data-amount = '{{amount_display}}'></canvas>
         </div>
 
         <div class="money-summary">
@@ -47,11 +48,11 @@
             </div>
             <div class="money-entry">
                 <span class="money-label">Money Out</span>
-                <span class="money-out">- $530</span>
+                <span class="money-out">- {{totalspent}}</span>
             </div>
         </div>
 
-        <div class="spending-categories">
+        <!-- <div class="spending-categories">
             <div class="category">
                 <label id="labelFood">Food</label>
                 <div class="progress-container">
@@ -68,11 +69,11 @@
                 </div>
                 <div class="category-details" id="detailsClothing">$300/$400</div>
                 <button onclick="openModal('Clothing', '400', 'Clothing')">✎</button>
-            </div>
+            </div> -->
             
         
             <!-- Modal for editing category details -->
-            <div id="editModal" class="modal">
+            <!-- <div id="editModal" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closeModal()">&times;</span>
                     <h2 class="modal-title">Change Category Name and Limit</h2>
@@ -92,24 +93,48 @@
                 </div>
             </div>
 
-        </div>  
+        </div>   -->
 
-        <a href="/add" class="add-transaction-button" aria-label="Add Transaction">
+        <div id="categoriesContainer" data-information = '{{distinctType}}' class="spending-categories">
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2 class="modal-title">Change Category Name and Limit</h2>
+                    <form id="editForm" onsubmit="submitForm(event)">
+                        <div class="form-group">
+                            <label for="categoryName">Name:</label>
+                            <input type="text" id="categoryName" name="categoryName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryLimit">Limit:</label>
+                            <input type="number" id="categoryLimit" name="categoryLimit" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="submit-button">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <a href="/add/{{id}}" class="add-transaction-button" aria-label="Add Transaction">
             <i>+</i>
         </a>
         
     </div>
 
     <script>
-        function navigateToView() {
+        function navigateToView(id) {
             const viewSelector = document.getElementById('viewSelector');
+            const monthSelector = document.getElementById('monthSelector').value;
             const selectedValue = viewSelector.value;
+            console.log(id);
             if (selectedValue === 'weekly') {
-                window.location.href = '/';
+                window.location.href = '/home/' + id;
             } else if (selectedValue === 'monthly') {
-                window.location.href = '/monthly';
+                window.location.href = '/monthly/' + id + '/' + monthSelector;
             }
-        }
+        }       
     </script>
 
     <!-- <script>

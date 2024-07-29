@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const spendings = JSON.parse(document.getElementById('spendingsChart').getAttribute('data-spendings'));
+    console.log(spendings);
     const ctx = document.getElementById('spendingsChart').getContext('2d');
     const spendingsChart = new Chart(ctx, {
         type: 'bar',
@@ -6,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Sun', 'Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat'],
             datasets: [{
                 label: 'Spendings',
-                data: [20, 50, 40, 30, 25, 35,],
+                data: spendings,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',

@@ -33,7 +33,7 @@
             <h1>Spendings</h1>
             <h2>Weekly Analysis</h2>
             <div class="dropdowns">
-                <select id="viewSelector" class="dropdown" onchange="navigateToView()">
+                <select id="viewSelector" class="dropdown" onchange="navigateToView({{id}})">
                     <option value="weekly">Week</option>
                     <option value="monthly">Month</option>
                 </select>
@@ -42,11 +42,13 @@
 
         <!-- Your weekly analysis content here -->
         <div class="spendings-info">
-            <div class="current-spending">Total spending:<br>$120.96</div>
-            <div class="avg-spending">Avg/Day:<br> $20.30</div>
+            <!-- <div class="current-spending">Total spending:<br>$120.96</div>
+            <div class="avg-spending">Avg/Day:<br> $20.30</div> -->
+            <div class="current-spending">Total spending:<br>{{totalspent}}</div>
+            <div class="avg-spending">Avg/Day:<br>{{avgspent}}</div>
         </div>
         <div class="chart-container">
-            <canvas id="spendingsChart"></canvas>
+            <canvas id="spendingsChart", data-spendings='[1, 1, 40, 30, 25, 35, 0]'></canvas>
         </div>
 
         <h2>Check on what you spent on!</h2>
@@ -65,13 +67,14 @@
     </div>
 
     <script>
-        function navigateToView() {
+        function navigateToView(id) {
             const viewSelector = document.getElementById('viewSelector');
             const selectedValue = viewSelector.value;
+            console.log(id);
             if (selectedValue === 'weekly') {
-                window.location.href = '/';
+                window.location.href = '/home/' + id;
             } else if (selectedValue === 'monthly') {
-                window.location.href = '/monthly';
+                window.location.href = '/monthly/' + id;
             }
         }       
     </script>
