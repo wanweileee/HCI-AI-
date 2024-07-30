@@ -43,12 +43,12 @@ transaction_data = {
 }
 
 init_limit = {
-    1: { "type": "Food", 'limitAmt': 100},
-    2: { "type": "Transport", 'limitAmt': 100},
-    3: { "type": "Clothing", 'limitAmt': 100},
-    4: { "type": "Entertainment", 'limitAmt': 100},
-    5: { "type": "Miscellaneous", 'limitAmt': 100},
-    6: { "type": "Others", 'limitAmt': 100}
+    1: { "type": "Food", 'limitAmt': 200},
+    2: { "type": "Transport", 'limitAmt': 200},
+    3: { "type": "Clothing", 'limitAmt': 200},
+    4: { "type": "Entertainment", 'limitAmt': 200},
+    5: { "type": "Miscellaneous", 'limitAmt': 200},
+    6: { "type": "Others", 'limitAmt': 200}
 
 }
 
@@ -61,50 +61,134 @@ dump_data = {
     "June": 1000,
 }
 
-@main.route('/home/<int:ids>')
-def home(ids):
-    foundtransaction = Transaction.query.filter_by(userid=ids).first()
-    if not foundtransaction:
-        for trans_id, details in transaction_data.items():
-            new_transaction = Transaction(
-                type=details["type"],
-                typeOther=details["typeOther"],
-                amount=details["amount"],
-                date=details["date"],
-                account=details["account"],
-                weekly=details["weekly"],
-                monthly=details["monthly"],
-                day=details["day"],
-                userid=ids
-            )
-            db.session.add(new_transaction)
+@main.route('/home/<int:ids>', methods=['GET', 'POST'])
+@main.route('/home/<int:ids>/<cater>', methods=['GET', 'POST'])
+def home(ids, cater=None):
+    if request.method == 'POST':
+        data = request.get_json()
+        if data.get('location') == 'LIMIT':
+            category_id = data.get('categoryId')
+            new_limit = data.get('newLimit')
+            if new_limit is not None:
+                try:
+                    # Convert new_limit to a float or int before multiplication
+                    new_limit = float(new_limit)
+                    new_limit *= 4
+                    print("New limit after multiplication:", new_limit)
+                except ValueError:
+                    # Handle the case where conversion is not possible
+                    print("Conversion error: 'newLimit' must be a number.")
+            if category_id and new_limit:
+                category = TransLimit.query.filter_by(userid=ids, type=category_id).first()
+                if category:
+                    category.limit = new_limit
+                    db.session.commit()
+                    return jsonify({"status": "success", "id": ids}), 200
+                else:
+                    return jsonify({"status": "error", "message": "Category not found"}), 404
+        else:
+            category = data.get('category')
+            categoryOther = data.get('categoryOther')
+            amount = data.get('amount')
 
-    foundtransactionLimit = TransLimit.query.filter_by(userid=ids).first()
-    if not foundtransactionLimit:
-        for trans_id, details in init_limit.items():
-            new_transaction_limit = TransLimit(
-                type=details["type"],
-                limit=details["limitAmt"],
-                userid=ids
-            )
-            db.session.add(new_transaction_limit)
+            # month,week,day = get_month_week_day(datetime.datetime.now())
 
-        db.session.commit()
-    
-    usertransactions = Transaction.query.filter_by(userid=ids, monthly='July', weekly = '1').all()
-    total_spent = sum([transaction.amount for transaction in usertransactions])
-    if len(usertransactions) > 0:
-        avg_spent = str("${:.2f}".format(total_spent / len(usertransactions)))
+            if category and amount:
+                new_transaction = Transaction(
+                    type=category,
+                    typeOther=categoryOther,
+                    amount=amount,
+                    date='2024-07-04',
+                    account='',
+                    weekly='1',
+                    monthly='July',
+                    day='Thursday',
+                    userid=ids
+                )
+                db.session.add(new_transaction)
+                db.session.commit()
+
+            return jsonify({"status": "success", "id": ids}), 200   
+
+        return redirect(url_for('main.home', ids=ids))
     else:
-        avg_spent = "$0"  # Default or fallback value if no transactions are present
+        foundtransaction = Transaction.query.filter_by(userid=ids).first()
+        if not foundtransaction:
+            for trans_id, details in transaction_data.items():
+                new_transaction = Transaction(
+                    type=details["type"],
+                    typeOther=details["typeOther"],
+                    amount=details["amount"],
+                    date=details["date"],
+                    account=details["account"],
+                    weekly=details["weekly"],
+                    monthly=details["monthly"],
+                    day=details["day"],
+                    userid=ids
+                )
+                db.session.add(new_transaction)
 
+        foundtransactionLimit = TransLimit.query.filter_by(userid=ids).first()
+        if not foundtransactionLimit:
+            for trans_id, details in init_limit.items():
+                new_transaction_limit = TransLimit(
+                    type=details["type"],
+                    limit=details["limitAmt"],
+                    userid=ids
+                )
+                db.session.add(new_transaction_limit)
 
+            db.session.commit()
         
-    return render_template('homepage.html', id=ids, totalspent= ("$" + str(total_spent)), avgspent=avg_spent )
+        usertransactions = Transaction.query.filter_by(userid=ids, monthly='July', weekly = '1').all()
+        total_spent = sum([transaction.amount for transaction in usertransactions])
+        if len(usertransactions) > 0:
+            avg_spent = str("${:.2f}".format(total_spent / len(usertransactions)))
+        else:
+            avg_spent = "$0"  # Default or fallback value if no transactions are present
+
+        amount_week = []
+        dayList = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+        for day in dayList:
+            usertransactionsbyweek = Transaction.query.filter_by(userid=ids, monthly='July', weekly = '1', day=day).all()
+            total_spent_week = sum([transaction.amount for transaction in usertransactionsbyweek])
+            amount_week.append(total_spent_week)
+                    
+        amount_week_display = json.dumps(amount_week)
+            
+
+        distinct_types_query = db.session.query(db.distinct(Transaction.type)).filter(
+                Transaction.userid == ids,
+                Transaction.monthly == 'July',
+                Transaction.weekly == '1'
+            )
+        distinct_types_week = distinct_types_query.all()
+        distinct_types_week_list = [type[0] for type in distinct_types_week]
+        distinct_types_week_info = []
+        for type in distinct_types_week_list:
+            distinct_types_spend = {}
+            type_spend = db.session.query(db.func.sum(Transaction.amount)).filter(
+                Transaction.userid == ids,
+                Transaction.monthly == 'July',
+                Transaction.weekly == '1',
+                Transaction.type == type
+            ).scalar()
+
+            type_limit = db.session.query(TransLimit.limit).filter(TransLimit.userid == ids, TransLimit.type == type).scalar()
+
+            distinct_types_spend['category'] = type
+            distinct_types_spend['amount'] = type_spend
+            distinct_types_spend['limit'] = type_limit/4
+            distinct_types_week_info.append(distinct_types_spend)
+
+            distinct_types_week_info_list = json.dumps(distinct_types_week_info)
+        
+    return render_template('homepage.html', id=ids, totalspent= ("$" + str(total_spent)), avgspent=avg_spent,amount_week_display = amount_week_display,distinctType = distinct_types_week_info_list, cater = cater)
 
 @main.route('/goals/<int:ids>')
 def goals(ids):
-    return render_template('goals.html', payments=payments)
+    return render_template('goals.html', id=ids, payments=payments)
 
 @main.route('/more/<int:ids>', methods=['GET', 'POST'])
 def settings(ids):
@@ -198,7 +282,7 @@ def planning(ids):
 def monthly(ids, cater=None):
     if request.method == 'POST':
         data = request.get_json()
-        if data.get('location') == 'Limit':
+        if data.get('location') == 'LIMIT':
             category_id = data.get('categoryId')
             new_limit = data.get('newLimit')
             
@@ -322,8 +406,8 @@ def update_payment(payment_id):
     payments[payment_id] = updated_payment
     return redirect(url_for('main.planning'))
 
-@main.route('/scan', methods=['GET', 'POST'])
-def scan():
+@main.route('/scan/<int:ids>', methods=['GET', 'POST'])
+def scan(ids):
     if request.method == 'POST':
         if 'file' not in request.files:
             return redirect(request.url)
@@ -339,7 +423,7 @@ def scan():
             text = pytesseract.image_to_string(Image.open(file_path))
             categorized_expenses = categorize_expenses(text)
             return render_template('scan_results.html', text=text, categories=categorized_expenses)
-    return render_template('scan.html')
+    return render_template('scan.html', id=ids)
 
 def categorize_expenses(text):
     categories = {'Food': [], 'Transport': [], 'Entertainment':[],'Others': []}

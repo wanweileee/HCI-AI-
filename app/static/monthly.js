@@ -428,14 +428,14 @@ function deductExpense(event) {
     var amount = parseFloat(document.getElementById('deductAmount').value);
     var categoryOther = ""; // Initialize the custom category name
 
-    // // Check if custom category is selected and use that value
-    // if (category === 'Others') {
-    //     categoryOther = document.getElementById('deductCustomCategory').value;
-    //     if (!category) { // Ensure the custom category is not empty
-    //         alert('Please enter a name for the custom category.');
-    //         return; // Stop the submission if no custom category name is provided
-    //     }
-    // }
+    // Check if custom category is selected and use that value
+    if (category === 'Others') {
+        categoryOther = document.getElementById('deductCustomCategory').value;
+        if (!category) { // Ensure the custom category is not empty
+            alert('Please enter a name for the custom category.');
+            return; // Stop the submission if no custom category name is provided
+        }
+    }
 
     var data = {
         location: 'DEDUCT',
@@ -455,7 +455,7 @@ function deductExpense(event) {
     .then(data => {
         if (data.status === 'success') {
             closeDeductExpenseModal();
-            window.location.href = '/monthly/' + data.id;
+            window.location.href = '/monthly/' + data.id + '/' + category;
         } else {
             alert('Failed to delete user: ' + data.message);
         }
@@ -584,12 +584,10 @@ function checkCustomCategory() {
 }
 
 function checkCustomDeductCategory() {
-    alert('here');
     var deductCategorySelect = document.getElementById('deductCategory');
     var deductcustomInput = document.getElementById('deductCustomCategory');
 
     if (deductCategorySelect.value === 'Others') {
-        alert('here1');
         deductcustomInput.style.display = 'block';
     } else {
         deductcustomInput.style.display = 'none';

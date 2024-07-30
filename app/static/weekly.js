@@ -44,22 +44,26 @@
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    const spendings = JSON.parse(document.getElementById('spendingsChart').getAttribute('data-spendings'));
-    console.log(spendings);
-    initializeDefaultCategories();
+    const path = window.location.pathname;
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length === 3) {
+        checkCategoryLimits(segments[2]);
+    }
+    //initializeDefaultCategories();
     updateUI();
-    initializeChart(spendings);
+    initializeChart();
 });
 
-function initializeChart(spending) {
+function initializeChart() {
     const ctx = document.getElementById('spendingsChart').getContext('2d');
+    const spendings = JSON.parse(document.getElementById('spendingsChart').getAttribute('data-spendings'));
     window.spendingsChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['Sun', 'Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat'],
             datasets: [{
                 label: 'Spendings',
-                data: spending, // Initial data, will be updated
+                data: spendings, // Initial data, will be updated
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -93,27 +97,27 @@ function initializeChart(spending) {
     });
 }
 
-function initializeDefaultCategories() {
-    const defaultCategories = [
-        { category: 'Food', amount: 40, limit: 100 },
-        { category: 'Clothing', amount: 25, limit: 100 }
-    ];
+// function initializeDefaultCategories() {
+//     const defaultCategories = [
+//         { category: 'Food', amount: 40, limit: 100 },
+//         { category: 'Clothing', amount: 25, limit: 100 }
+//     ];
 
-    let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
+//     let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
 
-    defaultCategories.forEach(defaultCategory => {
-        if (!transactions.some(tx => tx.category === defaultCategory.category && tx.date === 'default')) {
-            transactions.push({ category: defaultCategory.category, amount: defaultCategory.amount, limit: defaultCategory.limit, date: 'default' });
-        }
-    });
+//     defaultCategories.forEach(defaultCategory => {
+//         if (!transactions.some(tx => tx.category === defaultCategory.category && tx.date === 'default')) {
+//             transactions.push({ category: defaultCategory.category, amount: defaultCategory.amount, limit: defaultCategory.limit, date: 'default' });
+//         }
+//     });
 
-    localStorage.setItem('weeklyTransactions', JSON.stringify(transactions));
-}
+//     localStorage.setItem('weeklyTransactions', JSON.stringify(transactions));
+// }
 
-function getTotalSpending() {
-    let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
-    return transactions.reduce((total, transaction) => total + transaction.amount, 0);
-}
+// function getTotalSpending() {
+//     let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
+//     return transactions.reduce((total, transaction) => total + transaction.amount, 0);
+// }
 
 function openNotificationModal(message) {
     const notificationModal = document.getElementById('notificationModal');
@@ -129,65 +133,125 @@ function closeNotificationModal() {
 function addExpense(event) {
     event.preventDefault();
 
-    const categorySelect = document.getElementById('category');
-    const customCategoryInput = document.getElementById('customCategory');
-    const amountInput = document.getElementById('amount');
+    var categorySelect = document.getElementById('category');
+    var category = categorySelect.value;
+    var amount = parseFloat(document.getElementById('amount').value);
+    var categoryOther = ""; // Initialize the custom category name
 
-    let category = categorySelect.value;
-    if (category === 'Custom') {
-        category = customCategoryInput.value;
+    // Check if custom category is selected and use that value
+    if (category === 'Others') {
+        categoryOther = document.getElementById('customCategory').value;
+        if (!category) { // Ensure the custom category is not empty
+            alert('Please enter a name for the custom category.');
+            return; // Stop the submission if no custom category name is provided
+        }
     }
-    const amount = parseFloat(amountInput.value);
 
-    let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
-    transactions.push({ category, amount, date: new Date().toISOString() });
-    localStorage.setItem('weeklyTransactions', JSON.stringify(transactions));
+    var data = {
+        location: 'ADD',
+        category: category,
+        categoryOther: categoryOther,
+        amount: amount
+    };
 
-    updateUI();
-    checkCategoryLimits(); // Check limits after adding expense
-    closeAddExpenseModal();
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeAddExpenseModal();
+            window.location.href = '/home/' + data.id + '/' + category;
+        } else {
+            alert('Failed to delete user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 function deductExpense(event) {
     event.preventDefault();
 
-    const categorySelect = document.getElementById('deductCategory');
-    const customCategoryInput = document.getElementById('deductCustomCategory');
-    const amountInput = document.getElementById('deductAmount');
+    var categorySelect = document.getElementById('deductCategory');
+    var category = categorySelect.value;
+    var amount = parseFloat(document.getElementById('deductAmount').value);
+    var categoryOther = ""; // Initialize the custom category name
 
-    let category = categorySelect.value;
-    if (category === 'Custom') {
-        category = customCategoryInput.value;
+    // Check if custom category is selected and use that value
+    if (category === 'Others') {
+        categoryOther = document.getElementById('deductCustomCategory').value;
+        if (!category) { // Ensure the custom category is not empty
+            alert('Please enter a name for the custom category.');
+            return; // Stop the submission if no custom category name is provided
+        }
     }
-    const amount = parseFloat(amountInput.value);
 
-    let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
-    transactions.push({ category, amount: -amount, date: new Date().toISOString() });
-    localStorage.setItem('weeklyTransactions', JSON.stringify(transactions));
+    var data = {
+        location: 'DEDUCT',
+        category: category,
+        categoryOther: categoryOther,
+        amount: -amount
+    };
 
-    updateUI();
-    checkCategoryLimits(); // Check limits after deducting expense
-    closeDeductExpenseModal();
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeDeductExpenseModal();
+            window.location.href = '/home/' + data.id + '/' + category;
+        } else {
+            alert('Failed to delete user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 function checkCategoryLimits() {
-    let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
-    let categoryLimits = JSON.parse(localStorage.getItem('categoryLimits')) || {};
-    let categories = {};
+    // let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
+    // let categoryLimits = JSON.parse(localStorage.getItem('categoryLimits')) || {};
+    // let categories = {};
 
-    transactions.forEach(tx => {
-        if (categories[tx.category]) {
-            categories[tx.category].amount += tx.amount;
-        } else {
-            categories[tx.category] = { amount: tx.amount, limit: categoryLimits[tx.category] || 100 };
-        }
-    });
+    // transactions.forEach(tx => {
+    //     if (categories[tx.category]) {
+    //         categories[tx.category].amount += tx.amount;
+    //     } else {
+    //         categories[tx.category] = { amount: tx.amount, limit: categoryLimits[tx.category] || 100 };
+    //     }
+    // });
+
+    // let exceededCategories = [];
+
+    // for (let category in categories) {
+    //     if (categories[category].amount > categories[category].limit) {
+    //         exceededCategories.push(category);
+    //     }
+    // }
+
+    // if (exceededCategories.length > 0) {
+    //     let message = exceededCategories.map(category => `Your spending for ${category} has exceeded the limit!`).join('\n');
+    //     openNotificationModal(message);
+    // }
+    const categoriesList = JSON.parse(document.getElementById('spendingCategories').getAttribute('data-information'));
 
     let exceededCategories = [];
 
-    for (let category in categories) {
-        if (categories[category].amount > categories[category].limit) {
-            exceededCategories.push(category);
+    for (let categories in categoriesList) {
+        if (categoriesList[categories].amount > categoriesList[categories].limit) {
+            exceededCategories.push(categoriesList[categories].category);
         }
     }
 
@@ -198,20 +262,20 @@ function checkCategoryLimits() {
 }
 
 function updateUI() {
-    let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
-    let totalSpending = 0;
-    let categories = {};
+    // let transactions = JSON.parse(localStorage.getItem('weeklyTransactions')) || [];
+    // let totalSpending = 0;
+    const categoriesList = JSON.parse(document.getElementById('spendingCategories').getAttribute('data-information'));
 
-    transactions.forEach(tx => {
-        totalSpending += tx.amount;
-        if (!categories[tx.category]) {
-            categories[tx.category] = { amount: 0, limit: tx.limit || 100 };
-        }
-        categories[tx.category].amount += tx.amount;
-        if (tx.limit) {
-            categories[tx.category].limit = tx.limit;
-        }
-    });
+    // transactions.forEach(tx => {
+    //     totalSpending += tx.amount;
+    //     if (!categories[tx.category]) {
+    //         categories[tx.category] = { amount: 0, limit: tx.limit || 100 };
+    //     }
+    //     categories[tx.category].amount += tx.amount;
+    //     if (tx.limit) {
+    //         categories[tx.category].limit = tx.limit;
+    //     }
+    // });
 
     //document.getElementById('totalSpending').innerHTML = totalSpending;
     //document.getElementById('moneyOut').textContent = ` -$${totalSpending}`;
@@ -219,8 +283,8 @@ function updateUI() {
     const container = document.getElementById('spendingCategories');
     container.innerHTML = '';
 
-    for (let category in categories) {
-        createCategoryBar(category, categories[category].amount, categories[category].limit);
+    for (let categories in categoriesList) {
+        createCategoryBar(categoriesList[categories].category, categoriesList[categories].amount, categoriesList[categories].limit);
     }
 }
 
@@ -276,10 +340,21 @@ function checkCustomCategory() {
     var categorySelect = document.getElementById('category');
     var customInput = document.getElementById('customCategory');
 
-    if (categorySelect.value === 'Custom') {
+    if (categorySelect.value === 'Others') {
         customInput.style.display = 'block';
     } else {
         customInput.style.display = 'none';
+    }
+}
+
+function checkCustomDeductCategory() {
+    var deductCategorySelect = document.getElementById('deductCategory');
+    var deductcustomInput = document.getElementById('deductCustomCategory');
+
+    if (deductCategorySelect.value === 'Others') {
+        deductcustomInput.style.display = 'block';
+    } else {
+        deductcustomInput.style.display = 'none';
     }
 }
 
@@ -290,21 +365,34 @@ function submitEditForm(event) {
     const categoryLimit = document.getElementById('categoryLimit').value;
     const categoryId = document.getElementById('editForm').dataset.categoryId;
 
-    const label = document.getElementById('label' + categoryId);
-    const details = document.getElementById('details' + categoryId);
-    const progressBar = document.getElementById('progress' + categoryId);
+    var data = {
+        location: 'LIMIT',
+        name: categoryName,
+        newLimit: categoryLimit,
+        categoryId: categoryId
+    };
 
-    if (label && details && progressBar) {
-        label.textContent = categoryName;
+    // Send the POST request to the same URL
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeModal();
+            window.location.href = '/home/' + data.id;
+        } else {
+            alert('Failed to delete user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 
-        const currentSpend = details.textContent.split('/')[0].replace('$', '');
-        details.textContent = `$${currentSpend}/$${categoryLimit}`;
-
-        const spendPercentage = (parseFloat(currentSpend) / parseFloat(categoryLimit)) * 100;
-        progressBar.style.width = `${spendPercentage}%`;
-    }
-
-    closeModal();
 }
 
 function toggleView(view,id) {
