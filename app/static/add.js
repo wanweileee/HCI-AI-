@@ -35,25 +35,51 @@ function submitTransaction(event) {
     var categorySelect = document.getElementById('category');
     var category = categorySelect.value;
     var amount = parseFloat(document.getElementById('amount').value);
+    var categoryOther = ""; // Initialize the custom category name
 
     // Check if custom category is selected and use that value
     if (category === 'Custom') {
-        category = document.getElementById('customCategory').value;
+        categoryOther = document.getElementById('customCategory').value;
         if (!category) { // Ensure the custom category is not empty
             alert('Please enter a name for the custom category.');
             return; // Stop the submission if no custom category name is provided
         }
     }
 
-    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-    transactions.push({ category, amount });
+    var data = {
+        category: category,
+        categoryOther: categoryOther,
+        amount: amount
+    };
 
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            window.location.href = '/monthly/' + data.id;
+        } else {
+            alert('Failed to delete user: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    // let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    // transactions.push({ category, amount });
+
+    // localStorage.setItem('transactions', JSON.stringify(transactions));
 
 
-    document.getElementById('transactionForm').reset();
-    // Hide the custom category input again
-    document.getElementById('customCategory').style.display = 'none';
+    // document.getElementById('transactionForm').reset();
+    // // Hide the custom category input again
+    // document.getElementById('customCategory').style.display = 'none';
 
-    window.location.href = '/monthly'; // Redirect to see updates
+    // window.location.href = '/monthly'; // Redirect to see updates
 }

@@ -9,6 +9,10 @@ body {
 .container {
     padding: 20px;
     position: relative; /* Added this for positioning children */
+    height: 200vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
 }
 
 .spendings-info{
@@ -146,6 +150,13 @@ header h1 {
 
 
 /* category and edit bars */
+.spending-categories {
+    max-height: 600px; /* Set the height you want */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-bottom: 20px;
+}
+
+
 .spending-categories .category {
     display: flex;
     align-items: center;
@@ -324,10 +335,49 @@ input[type="text"], input[type="number"] {
     z-index: 1000;
 }
 
+.deduct-transaction-button {
+    position: fixed;
+    bottom: 120px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #8861d2;
+    color: rgb(0, 0, 0);
+    border-radius: 50%; /*button is circular*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px; /*size of plus sign*/
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /*shadow effect*/
+    border: none; /*remove default border*/
+    z-index: 1000;
+}
+
 .add-transaction-button:hover, .add-transaction-button:focus {
     background-color: #0056b3; /* Darker blue on hover/focus */
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     color: white;
     text-decoration: none; /* Ensures no underline appears on hover */
 }
+
+/*toggle bar*/
+.toggle-bar {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.toggle-button {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #c0c0c0;
+}
+.toggle-button.active {
+    background-color: #858585;
+    font-weight: bold;
+}
+
 

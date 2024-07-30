@@ -21,7 +21,7 @@
                     <option value="Entertainment">Entertainment</option>
                     <option value="Clothing">Clothing</option>
                     <option value="Miscellanous">Miscellanous</option>
-                    <option value="Custom">Others &#9998;</option> <!-- Unicode for edit icon -->
+                    <option value="Others">Others &#9998;</option> <!-- Unicode for edit icon -->
                 </select>
                 <!-- Hidden input field for custom category name -->
                 <input type="text" id="customCategory" name="customCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
@@ -43,7 +43,7 @@
             var customInput = document.getElementById('customCategory');
         
             // Check if the selected option is 'Custom'
-            if (categorySelect.value === 'Custom') {
+            if (categorySelect.value === 'Others') {
                 customInput.style.display = 'block'; // Show the input field
             } else {
                 customInput.style.display = 'none';  // Hide the input field

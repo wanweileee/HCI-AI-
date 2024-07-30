@@ -11,6 +11,7 @@ import datetime
 
 classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
 
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\fawzi\Desktop\TERM 5\60.005 HCI and AI\HCI-AI-\tesseract.exe'  # Adjust the path if needed
 
 main = Blueprint('main', __name__)
 
@@ -21,24 +22,24 @@ payments = {
 }
 
 transaction_data = {
-    1: { "type": "Food", "amount": 20, "date": "2024-07-01", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Monday"},
-    2: { "type": "Transport", "amount": 20.25, "date": "2024-07-01", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Monday"},
-    3: { "type": "Clothing", "amount": 30, "date": "2024-07-02", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Tuesday"},
-    4: { "type": "Food", "amount": 20, "date": "2024-07-03", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Wednesday"},
-    5: { "type": "Entertainment", "amount": 13.50, "date": "2024-07-04", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Thursday"},
-    6: { "type": "Clothing", "amount": 50, "date": "2024-07-05", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Friday"},
-    7: { "type": "Miscellaneous", "amount": 17.25, "date": "2024-07-06", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Saturday"},
-    8: { "type": "Food", "amount": 20, "date": "2024-07-07", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Sunday"},
-    9: { "type": "Food", "amount": 9, "date": "2024-07-07", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Sunday"},
-    10: { "type": "Food", "amount": 20, "date": "2024-07-08", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Monday"},
-    11: { "type": "Transport", "amount": 20.25, "date": "2024-07-08", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Monday"},
-    12: { "type": "Clothing", "amount": 30, "date": "2024-07-09", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Tuesday"},
-    13: { "type": "Food", "amount": 20, "date": "2024-07-09", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Wednesday"},
-    14: { "type": "Entertainment", "amount": 13.50, "date": "2024-07-10", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Thursday"},
-    15: { "type": "Clothing", "amount": 50, "date": "2024-07-11", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Friday"},
-    16: { "type": "Miscellaneous", "amount": 17.25, "date": "2024-07-12", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Saturday"},
-    17: { "type": "Food", "amount": 20, "date": "2024-07-13", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Sunday"},
-    18: { "type": "Food", "amount": 9, "date": "2024-07-13", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Sunday"}
+    1: { "type": "Food","typeOther": "", "amount": 20, "date": "2024-07-01", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Monday"},
+    2: { "type": "Transport","typeOther": "", "amount": 20.25, "date": "2024-07-01", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Monday"},
+    3: { "type": "Clothing","typeOther": "", "amount": 30, "date": "2024-07-02", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Tuesday"},
+    4: { "type": "Food","typeOther": "", "amount": 20, "date": "2024-07-03", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Wednesday"},
+    5: { "type": "Entertainment","typeOther": "", "amount": 13.50, "date": "2024-07-04", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Thursday"},
+    6: { "type": "Clothing","typeOther": "", "amount": 50, "date": "2024-07-05", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Friday"},
+    7: { "type": "Miscellaneous","typeOther": "", "amount": 17.25, "date": "2024-07-06", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Saturday"},
+    8: { "type": "Food","typeOther": "", "amount": 20, "date": "2024-07-07", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Sunday"},
+    9: { "type": "Food","typeOther": "", "amount": 9, "date": "2024-07-07", "account": "DBS bank", "weekly": "1", "monthly": "July", "day": "Sunday"},
+    10: { "type": "Food","typeOther": "", "amount": 20, "date": "2024-07-08", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Monday"},
+    11: { "type": "Transport","typeOther": "", "amount": 20.25, "date": "2024-07-08", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Monday"},
+    12: { "type": "Clothing","typeOther": "", "amount": 30, "date": "2024-07-09", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Tuesday"},
+    13: { "type": "Food","typeOther": "", "amount": 20, "date": "2024-07-09", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Wednesday"},
+    14: { "type": "Entertainment","typeOther": "", "amount": 13.50, "date": "2024-07-10", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Thursday"},
+    15: { "type": "Clothing","typeOther": "", "amount": 50, "date": "2024-07-11", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Friday"},
+    16: { "type": "Miscellaneous","typeOther": "", "amount": 17.25, "date": "2024-07-12", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Saturday"},
+    17: { "type": "Food","typeOther": "", "amount": 20, "date": "2024-07-13", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Sunday"},
+    18: { "type": "Food","typeOther": "", "amount": 9, "date": "2024-07-13", "account": "DBS bank", "weekly": "2", "monthly": "July", "day": "Sunday"}
 }
 
 init_limit = {
@@ -67,6 +68,7 @@ def home(ids):
         for trans_id, details in transaction_data.items():
             new_transaction = Transaction(
                 type=details["type"],
+                typeOther=details["typeOther"],
                 amount=details["amount"],
                 date=details["date"],
                 account=details["account"],
@@ -117,8 +119,32 @@ def settings(ids):
         
     return render_template('settings.html', id=ids)
 
-@main.route('/add/<int:ids>')
+@main.route('/add/<int:ids>', methods=['GET', 'POST'])
 def add(ids):
+    if(request.method == 'POST'):
+        data = request.get_json()
+        category = data.get('category')
+        categoryOther = data.get('categoryOther')
+        amount = data.get('amount')
+
+        month,week,day = get_month_week_day(datetime.datetime.now())
+
+        if category and amount:
+            new_transaction = Transaction(
+                type=category,
+                typeOther=categoryOther,
+                amount=amount,
+                date=datetime.datetime.now().strftime("%Y-%m-%d"),
+                account='',
+                weekly=week,
+                monthly=month,
+                day=day,
+                userid=ids
+            )
+            db.session.add(new_transaction)
+            db.session.commit()
+
+        return jsonify({"status": "success", "id": ids}), 200
     return render_template('add.html', id=ids)
 
 @main.route('/', methods=['GET', 'POST'])
@@ -167,25 +193,50 @@ def planning(ids):
     return render_template('planning.html', id=ids, payments=payments)
 
 
-@main.route('/monthly/<int:ids>', defaults={'month': 'July'}, methods=['GET', 'POST'])
-@main.route('/monthly/<int:ids>/<month>', methods=['GET', 'POST'])
-def monthly(ids, month):
+@main.route('/monthly/<int:ids>', methods=['GET', 'POST'])
+@main.route('/monthly/<int:ids>/<cater>', methods=['GET', 'POST'])
+def monthly(ids, cater=None):
     if request.method == 'POST':
         data = request.get_json()
-        category_id = data.get('categoryId')
-        new_limit = data.get('newLimit')
-        
-        if category_id and new_limit:
-            category = TransLimit.query.filter_by(userid=ids, type=category_id).first()
-            if category:
-                category.limit = new_limit
-                db.session.commit()
-                return jsonify({"status": "success", "id": ids}), 200
-            else:
-                return jsonify({"status": "error", "message": "Category not found"}), 404
+        if data.get('location') == 'Limit':
+            category_id = data.get('categoryId')
+            new_limit = data.get('newLimit')
+            
+            if category_id and new_limit:
+                category = TransLimit.query.filter_by(userid=ids, type=category_id).first()
+                if category:
+                    category.limit = new_limit
+                    db.session.commit()
+                    return jsonify({"status": "success", "id": ids}), 200
+                else:
+                    return jsonify({"status": "error", "message": "Category not found"}), 404
+        else:
+            category = data.get('category')
+            categoryOther = data.get('categoryOther')
+            amount = data.get('amount')
 
-        return redirect(url_for('main.monthly', ids=ids, month=month))
+            month,week,day = get_month_week_day(datetime.datetime.now())
+
+            if category and amount:
+                new_transaction = Transaction(
+                    type=category,
+                    typeOther=categoryOther,
+                    amount=amount,
+                    date=datetime.datetime.now().strftime("%Y-%m-%d"),
+                    account='',
+                    weekly=week,
+                    monthly=month,
+                    day=day,
+                    userid=ids
+                )
+                db.session.add(new_transaction)
+                db.session.commit()
+
+            return jsonify({"status": "success", "id": ids}), 200   
+
+        return redirect(url_for('main.monthly', ids=ids))
     else:
+        month = 'July'
         months_up_to_selected, months_full_up_to_selected = get_months_up_to(month)
         month_display = json.dumps(months_up_to_selected)
 
@@ -238,14 +289,14 @@ def monthly(ids, month):
 
             type_limit = db.session.query(TransLimit.limit).filter(TransLimit.userid == ids, TransLimit.type == type).scalar()
 
-            distinct_types_spend['name'] = type
-            distinct_types_spend['spent'] = type_spend
+            distinct_types_spend['category'] = type
+            distinct_types_spend['amount'] = type_spend
             distinct_types_spend['limit'] = type_limit
             distinct_types_info.append(distinct_types_spend)
 
         distinct_types_info_list = json.dumps(distinct_types_info)
     
-    return render_template('monthly.html', id=ids, month=month, month_display=month_display,amount_display = amount_display,totalspent= ("$" + str(total_spent)), avgspent=avg_spent, distinctType = distinct_types_info_list)
+    return render_template('monthly.html', id=ids, month=month, month_display=month_display,amount_display = amount_display,totalspent= ("$" + str(total_spent)), avgspent=avg_spent, distinctType = distinct_types_info_list, catar = cater)
 
 @main.route('/edit_payment/<int:payment_id>')
 def edit_payment(payment_id):

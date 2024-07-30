@@ -15,146 +15,137 @@
         <header>
             <h1>Spendings</h1>
             <h2>Monthly Analysis</h2>
-            <div class="dropdowns">
-                <select id="viewSelector" class="dropdown" onchange="navigateToView({{id}})">
-                    <option value="monthly">Month</option>
-                    <option value="weekly">Week</option>
-                </select>
-                <select id="monthSelector" class="dropdown" onchange="navigateToView({{id}})">
-                    <option value="January" {{ 'selected' if month == 'January' else '' }}>Jan</option>
-                    <option value="February" {{ 'selected' if month == 'February' else '' }}>Feb</option>
-                    <option value="March" {{ 'selected' if month == 'March' else '' }}>Mar</option>
-                    <option value="April" {{ 'selected' if month == 'April' else '' }}>Apr</option>
-                    <option value="May" {{ 'selected' if month == 'May' else '' }}>May</option>
-                    <option value="June" {{ 'selected' if month == 'June' else '' }}>Jun</option>
-                    <option value="July" {{ 'selected' if month == 'July' else '' }}>Jul</option>
-                </select>
-            </div>
         </header>
 
-        <!-- Your monthly analysis content here -->
+        <!-- Notification Modal -->
+        <div id="notificationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeNotificationModal()">&times;</span>
+                <h2 class="modal-title">Notification</h2>
+                <p id="notificationMessage"></p>
+                <button class="submit-button" onclick="closeNotificationModal()">OK</button>
+            </div>
+        </div>
+
+        <!-- Toggle bar for switching views -->
+        <div class="toggle-bar">
+            <div class="toggle-button" id="weeklyToggle" onclick="toggleView('weekly', {{id}})">Weekly</div>
+            <div class="toggle-button active" id="monthlyToggle" onclick="toggleView('monthly',{{id}})">Monthly</div>
+        </div>
+
+
+        <!-- Monthly analysis content -->
         <div class="spendings-info">
-            <div class="current-spending">Total spending:</br>{{totalspent}}</div>
-            <div class="avg-spending">Avg/Week:</br> {{avgspent}}</div>
+            <div class="current-spending">Total spending:<br>$<span id="totalSpending">{{totalspent}}</span></div>
+            <div class="avg-spending">Avg/Week:<br>$<span id="avgSpending">{{avgspent}}</span></div>
         </div>
         <div class="chart-container">
-            <canvas id="spendingsChart" , data-Label= '{{month_display}}', data-amount = '{{amount_display}}'></canvas>
+            <canvas id="spendingsChart", data-Label= '{{month_display}}', data-amount = '{{amount_display}}'></canvas>
         </div>
 
         <div class="money-summary">
             <div class="money-entry">
                 <span class="money-label">Money In</span>
-                <span class="money-value">+ $2000</span>
+                <span class="money-value" id="moneyIn">+ $2000</span>
             </div>
             <div class="money-entry">
                 <span class="money-label">Money Out</span>
-                <span class="money-out">- {{totalspent}}</span>
+                <span class="money-out" id="moneyOut">- {{totalspent}}</span>
             </div>
         </div>
 
-        <!-- <div class="spending-categories">
-            <div class="category">
-                <label id="labelFood">Food</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressFood" style="width: 50%;"></div>
-                </div>
-                <div class="category-details" id="detailsFood">$150/$300</div>
-                <button onclick="openModal('Food', '300', 'Food')">✎</button>
-            </div>
-            
-            <div class="category">
-                <label id="labelClothing">Clothing</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressClothing" style="width: 75%;"></div>
-                </div>
-                <div class="category-details" id="detailsClothing">$300/$400</div>
-                <button onclick="openModal('Clothing', '400', 'Clothing')">✎</button>
-            </div> -->
-            
-        
-            <!-- Modal for editing category details -->
-            <!-- <div id="editModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h2 class="modal-title">Change Category Name and Limit</h2>
-                    <form id="editForm" onsubmit="submitForm(event)">
-                        <div class="form-group">
-                            <label for="categoryName">Name:</label>
-                            <input type="text" id="categoryName" name="categoryName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryLimit">Limit:</label>
-                            <input type="number" id="categoryLimit" name="categoryLimit" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="submit-button">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="spending-categories" data-information = '{{distinctType}}' id="spendingCategories">
+            <!-- Categories will be dynamically populated -->
+        </div>  
 
-        </div>   -->
-
-        <div id="categoriesContainer" data-information = '{{distinctType}}' class="spending-categories">
-            <div id="editModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h2 class="modal-title">Change Category Name and Limit</h2>
-                    <form id="editForm" onsubmit="submitForm(event)">
-                        <div class="form-group">
-                            <label for="categoryName">Name:</label>
-                            <input type="text" id="categoryName" name="categoryName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="categoryLimit">Limit:</label>
-                            <input type="number" id="categoryLimit" name="categoryLimit" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="submit-button">Submit</button>
-                        </div>
-                    </form>
-                </div>
+        <!-- Modal for adding a new expense -->
+        <div id="addExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddExpenseModal()">&times;</span>
+                <h2 class="modal-title">Add Transaction</h2>
+                <form id="addExpenseForm" onsubmit="addExpense(event)">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" onchange="checkCustomCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Others">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="customCategory" name="customCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Add</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <a href="/add/{{id}}" class="add-transaction-button" aria-label="Add Transaction">
+        <!-- Modal for deducting an expense -->
+        <div id="deductExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeductExpenseModal()">&times;</span>
+                <h2 class="modal-title">Deduct Transaction</h2>
+                <form id="deductExpenseForm" onsubmit="deductExpense(event)">
+                    <div class="form-group">
+                        <label for="deductCategory">Category:</label>
+                        <select id="deductCategory" name="deductCategory" onchange="checkCustomDeductCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Others">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="deductCustomCategory" name="deductCustomCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="deductAmount">Amount:</label>
+                        <input type="number" id="deductAmount" name="deductAmount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Deduct</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for editing category details -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="modal-title">Edit Category</h2>
+                <form id="editForm" onsubmit="submitEditForm(event)">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name:</label>
+                        <input type="text" id="categoryName" name="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryLimit">Category Limit:</label>
+                        <input type="number" id="categoryLimit" name="categoryLimit" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <button class="add-transaction-button" aria-label="Add Transaction" onclick="openAddExpenseModal()">
             <i>+</i>
-        </a>
-        
+        </button>
+        <button class="deduct-transaction-button" aria-label="Deduct Transaction" onclick="openDeductExpenseModal()">
+            <i>-</i>
+        </button>
     </div>
 
-    <script>
-        function navigateToView(id) {
-            const viewSelector = document.getElementById('viewSelector');
-            const monthSelector = document.getElementById('monthSelector').value;
-            const selectedValue = viewSelector.value;
-            console.log(id);
-            if (selectedValue === 'weekly') {
-                window.location.href = '/home/' + id;
-            } else if (selectedValue === 'monthly') {
-                window.location.href = '/monthly/' + id + '/' + monthSelector;
-            }
-        }       
-    </script>
-
-    <!-- <script>
-        function navigateToView() {
-            const monthSelector = document.getElementById('monthSelector');
-            const selectedValue = monthSelector.value;
-            if (selectedValue === 'june') {
-                window.location.href = '/monthly';
-            } else if (selectedValue === 'may') {
-                window.location.href = '/may';
-            }
-        }
-    </script> -->
-
-<script src="{{ url_for('static', filename='monthly.js') }}"></script>
-    
+    <script src="{{ url_for('static', filename='monthly.js') }}"></script>
 </body>
 </html>
-
-
-
 {% endblock %}
-

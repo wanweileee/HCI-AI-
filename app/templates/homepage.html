@@ -9,82 +9,142 @@
     <title>Weekly Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        .chart-container {
-            width: 100%; /* Adjust the width as needed */
-            height: 400px; /* Adjust the height as needed */
-        }
-
-        .spendings-donut {
-            width: 50%; /* Adjust the width as needed */
-            height: 400px; /* Adjust the height as needed */
-        }
-
-        .spendings-donut canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Spendings</h1>
             <h2>Weekly Analysis</h2>
-            <div class="dropdowns">
-                <select id="viewSelector" class="dropdown" onchange="navigateToView({{id}})">
-                    <option value="weekly">Week</option>
-                    <option value="monthly">Month</option>
-                </select>
-            </div>
         </header>
 
-        <!-- Your weekly analysis content here -->
+        <!-- Notification Modal -->
+        <div id="notificationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeNotificationModal()">&times;</span>
+                <h2 class="modal-title">Notification</h2>
+                <p id="notificationMessage"></p>
+                <button class="submit-button" onclick="closeNotificationModal()">OK</button>
+            </div>
+        </div>
+
+        <!-- Toggle bar for switching views -->
+        <div class="toggle-bar">
+            <div class="toggle-button" id="weeklyToggle" onclick="toggleView('weekly', {{id}})">Weekly</div>
+            <div class="toggle-button active" id="monthlyToggle" onclick="toggleView('monthly', {{id}})">Monthly</div>
+        </div>
+
+        <!-- Weekly analysis content -->
         <div class="spendings-info">
-            <!-- <div class="current-spending">Total spending:<br>$120.96</div>
-            <div class="avg-spending">Avg/Day:<br> $20.30</div> -->
-            <div class="current-spending">Total spending:<br>{{totalspent}}</div>
-            <div class="avg-spending">Avg/Day:<br>{{avgspent}}</div>
+            <div class="current-spending">Total spending:<br>$<span id="totalSpending">{{totalspent}}</span></div>
+            <div class="avg-spending">Avg/Day:<br>$<span id="avgSpending">{{avgspent}}</span></div>
         </div>
         <div class="chart-container">
             <canvas id="spendingsChart", data-spendings='[1, 1, 40, 30, 25, 35, 0]'></canvas>
         </div>
 
-        <h2>Check on what you spent on!</h2>
-        <div class="spendings-donut">
-            <canvas id="donut"></canvas>
+        <div class="money-summary">
+            <div class="money-entry">
+                <span class="money-label">Money In</span>
+                <span class="money-value" id="moneyIn">+ $2000</span>
+            </div>
+            <div class="money-entry">
+                <span class="money-label">Money Out</span>
+                <span class="money-out" id="moneyOut">- {{totalspent}}</span>
+            </div>
         </div>
 
-        
+        <div class="spending-categories" data-information = '{{distinctType}}' id="spendingCategories">
+            <!-- Categories will be dynamically populated -->
+        </div>  
 
-        <div class="plus-button" onclick="addTransForm()">
-            <span>+</span>
+        <!-- Modal for adding a new expense -->
+        <div id="addExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddExpenseModal()">&times;</span>
+                <h2 class="modal-title">Add Transaction</h2>
+                <form id="addExpenseForm" onsubmit="addExpense(event)">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" onchange="checkCustomCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Others">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="customCategory" name="customCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Add</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="add-trans-container" id="addTransContainer" style="display: none;"></div> <!-- Ensure display: none initially -->
+        <!-- Modal for deducting an expense -->
+        <div id="deductExpenseModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDeductExpenseModal()">&times;</span>
+                <h2 class="modal-title">Deduct Transaction</h2>
+                <form id="deductExpenseForm" onsubmit="deductExpense(event)">
+                    <div class="form-group">
+                        <label for="deductCategory">Category:</label>
+                        <select id="deductCategory" name="deductCategory" onchange="checkCustomDeductCategory()">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                            <option value="Others">Others &#9998;</option>
+                        </select>
+                        <input type="text" id="deductCustomCategory" name="deductCustomCategory" placeholder="Enter custom category" class="custom-category-input" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="deductAmount">Amount:</label>
+                        <input type="number" id="deductAmount" name="deductAmount" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Deduct</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
+        <!-- Modal for editing category details -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 class="modal-title">Edit Category</h2>
+                <form id="editForm" onsubmit="submitEditForm(event)">
+                    <div class="form-group">
+                        <label for="categoryName">Category Name:</label>
+                        <input type="text" id="categoryName" name="categoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryLimit">Category Limit:</label>
+                        <input type="number" id="categoryLimit" name="categoryLimit" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <button class="add-transaction-button" aria-label="Add Transaction" onclick="openAddExpenseModal()">
+            <i>+</i>
+        </button>
+        <button class="deduct-transaction-button" aria-label="Deduct Transaction" onclick="openDeductExpenseModal()">
+            <i>-</i>
+        </button>
     </div>
 
-    <script>
-        function navigateToView(id) {
-            const viewSelector = document.getElementById('viewSelector');
-            const selectedValue = viewSelector.value;
-            console.log(id);
-            if (selectedValue === 'weekly') {
-                window.location.href = '/home/' + id;
-            } else if (selectedValue === 'monthly') {
-                window.location.href = '/monthly/' + id;
-            }
-        }       
-    </script>
-
-    <!-- Load custom scripts -->
     <script src="{{ url_for('static', filename='weekly.js') }}"></script>
-    <script src="{{ url_for('static', filename='donutchart.js') }}"></script>
-    <script src="{{ url_for('static', filename='addtrans.js') }}"></script>
-
 </body>
 </html>
-
 {% endblock %}

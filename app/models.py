@@ -54,6 +54,7 @@ class Transaction(db.Model):
 
     id = db.Column("id", db.Integer, primary_key=True)
     type = db.Column(db.String(100))
+    typeOther = db.Column(db.String(100))
     amount = db.Column(db.Float)
     date = db.Column(db.String(100))
     account = db.Column(db.String(100))
@@ -62,8 +63,9 @@ class Transaction(db.Model):
     day = db.Column(db.String(100))
     userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
 
-    def __init__(self, type, amount, date, account, weekly, monthly, day, userid):
+    def __init__(self, type,typeOther, amount, date, account, weekly, monthly, day, userid):
        self.type = type
+       self.typeOther = typeOther
        self.amount = amount
        self.date = date
        self.account = account
