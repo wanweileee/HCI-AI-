@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
 import pytesseract
 from PIL import Image
 import os
@@ -48,7 +48,9 @@ init_limit = {
     3: { "type": "Clothing", 'limitAmt': 200},
     4: { "type": "Entertainment", 'limitAmt': 200},
     5: { "type": "Miscellaneous", 'limitAmt': 200},
-    6: { "type": "Others", 'limitAmt': 200}
+    6: { "type": "Others", 'limitAmt': 200},
+    7: { "type": "Shopping", 'limitAmt': 200},
+    8: { "type": "Groceries", 'limitAmt': 200},
 
 }
 
@@ -268,13 +270,30 @@ def signup():
 
 @main.route('/planning/<int:ids>', methods=['GET', 'POST'])
 def planning(ids):
+    if request.method == 'POST':
+        data = request.get_json()
+        new_payment = {
+            "name": data.get('name'),
+            "amount": float(data.get('amount')),
+            "date": data.get('date'),
+            "recurring": data.get('recurring'),
+            "account": data.get('account'),
+            "type": data.get('type', 'Planned Payments')  # Provide a default value if type is not present
+        }
+        new_payment = Payment(name=new_payment['name'], amount=new_payment['amount'], date=new_payment['date'], recurring=new_payment['recurring'], account=new_payment['account'], type=new_payment['type'], userid=ids)
+        db.session.add(new_payment)
+        db.session.commit()
+        return jsonify({"status": "success", "id": ids}), 200
+
     foundpayments = Payment.query.filter_by(userid=ids,name='Chatgpt').first()
     if not foundpayments:
         new_payment = Payment(name='Chatgpt', amount=40, date='2024-06-29', recurring='Monthly', account='DBS bank', type='Planned Payments', userid=ids)
         db.session.add(new_payment)
         db.session.commit()
+    
+    all_payments = Payment.query.filter_by(userid=ids).all()
 
-    return render_template('planning.html', id=ids, payments=payments)
+    return render_template('planning.html', id=ids, payments=all_payments)
 
 
 @main.route('/monthly/<int:ids>', methods=['GET', 'POST'])
@@ -382,47 +401,100 @@ def monthly(ids, cater=None):
     
     return render_template('monthly.html', id=ids, month=month, month_display=month_display,amount_display = amount_display,totalspent= ("$" + str(total_spent)), avgspent=avg_spent, distinctType = distinct_types_info_list, catar = cater)
 
-@main.route('/edit_payment/<int:payment_id>')
-def edit_payment(payment_id):
-    payment = payments.get(payment_id)
+@main.route('/edit_payment/<int:ids>/<int:payment_id>')
+def edit_payment(ids,payment_id):
+    payment = Payment.query.filter_by(userid=ids, id=payment_id).first()
     if payment:
-        return render_template('edit_payment.html', payment=payment)
+        return render_template('edit_payment.html', id=ids, payment=payment)
     else:
         return "Payment not found", 404
 
-@main.route('/update_payment/<int:payment_id>', methods=['POST'])
-def update_payment(payment_id):
-    # Retrieve the updated data from the form
-    updated_payment = {
-        "id": payment_id,
-        "name": request.form['name'],
-        "amount": float(request.form['amount']),
-        "date": request.form['date'],
-        "recurring": request.form['recurring'],
-        "account": request.form['account'],
-        "type": request.form.get('type', 'Planned Payments')  # Provide a default value if type is not present
-    }
-    # Update the payment details in the sample data (in a real app, this would be a database update)
-    payments[payment_id] = updated_payment
-    return redirect(url_for('main.planning'))
+@main.route('/update_payment/<int:ids>/<int:payment_id>', methods=['POST'])
+def update_payment(ids,payment_id):
+    action = request.form['action']
+    if action == 'update':
+        name = request.form.get('name')
+        amount = request.form.get('amount')
+        date = request.form.get('date')
+        recurring = request.form.get('recurring')
+        account = request.form.get('account')
 
+        payment = Payment.query.get(payment_id)
+        if payment:
+            payment.name = name
+            payment.amount = amount
+            payment.date = date
+            payment.recurring = recurring
+            payment.account = account
+            db.session.commit()
+
+        return redirect(url_for('main.planning', ids=ids))
+    elif action == 'delete':
+        result = Payment.query.filter_by(id=payment_id).delete()
+        db.session.commit()
+        return redirect(url_for('main.planning', ids=ids))
+    
+    # Retrieve the updated data from the form
+    # if request.form.get('method') == 'ADD':
+    #     updated_payment = {
+    #         "id": payment_id,
+    #         "name": request.form['name'],
+    #         "amount": float(request.form['amount']),
+    #         "date": request.form['date'],
+    #         "recurring": request.form['recurring'],
+    #         "account": request.form['account'],
+    #         "type": request.form.get('type', 'Planned Payments')  # Provide a default value if type is not present
+    #     }
+    #     # Update the payment details in the sample data (in a real app, this would be a database update)
+    #     payments[payment_id] = updated_payment
+    #     return redirect(url_for('main.planning'))
+    # elif request.form.get('method') == 'DELETE':
+    #     # Delete the payment from the sample data (in a real app, this would be a database delete)
+    #     user_id = request.form.get('userid')
+    #     payment_id = request.form.get('payment_id')
+    #     Payment.query.filter_by(id= payment_id,userid = user_id).delete()
+    #     return jsonify({"status": "success", "id": user_id}), 200 
+    
 @main.route('/scan/<int:ids>', methods=['GET', 'POST'])
 def scan(ids):
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            return redirect(request.url)
-        if file:
-            upload_folder = os.path.join('app/static/uploads')
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            file_path = os.path.join(upload_folder, file.filename)
-            file.save(file_path)
-            text = pytesseract.image_to_string(Image.open(file_path))
-            categorized_expenses = categorize_expenses(text)
-            return render_template('scan_results.html', text=text, categories=categorized_expenses)
+        content_type = request.headers.get('Content-Type')
+        if content_type == 'application/json':
+            data = request.get_json()
+            transaction_data = data.get('transaction')
+            for transaction in transaction_data:
+                new_transaction = Transaction(
+                    type=transaction['category'],
+                    typeOther='',
+                    amount=transaction['amount'],
+                    date='2024-07-04',
+                    account='',
+                    weekly='1',
+                    monthly='July',
+                    day='Thursday',
+                    userid=ids
+                )
+                db.session.add(new_transaction)
+            db.session.commit()
+
+            return jsonify({"status": "success", "id": ids}), 200 
+        elif 'multipart/form-data' in content_type:
+            if 'file' not in request.files:
+                return redirect(request.url)
+            file = request.files['file']
+            if file.filename == '':
+                return redirect(request.url)
+            if file:
+                upload_folder = os.path.join('app/static/uploads')
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder)
+                file_path = os.path.join(upload_folder, file.filename)
+                file.save(file_path)
+                text = pytesseract.image_to_string(Image.open(file_path))
+                categorized_expenses = categorize_expenses(text)
+                return render_template('scan_results.html', id=ids, text=text, categories=categorized_expenses)
+        else:
+            return 'Unsupported Media Type', 415
     return render_template('scan.html', id=ids)
 
 def categorize_expenses(text):

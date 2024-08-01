@@ -1,26 +1,236 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website Title</title>
+    <title>Scan Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='scan_results.css') }}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        h3 {
+            text-align: center;
+            color: #fff; /* Make the header text white */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: black; /* Make the table header text black */
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            color: white;
+            background-color: #a34caf;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .buttons button:hover {
+            background-color: #922e99;
+        }
+        h5 {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #fff; /* Make the total text white */
+        }
+    </style>
 </head>
+<body>
+    <div class="container">
+        <h3>Categorized Expenses</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Item</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="6">Food</td>
+                    <td>Beef Cubes</td>
+                    <td>$40</td>
+                </tr>
+                <tr>
+                    <td>Filet Mignon</td>
+                    <td>$20</td>
+                </tr>
+                <tr>
+                    <td>Pokka Green Tea</td>
+                    <td>$10</td>
+                </tr>
+                <tr>
+                    <td>Butter Cookies</td>
+                    <td>$20</td>
+                </tr>
+                <tr>
+                    <td>Muffin</td>
+                    <td>$10</td>
+                </tr>
+                <tr>
+                    <td>Jap Bento</td>
+                    <td>$15</td>
+                </tr>
+                <tr>
+                    <td>Transport</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td>Entertainment</td>
+                    <td>Mario Kart 8</td>
+                    <td>$80</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Shopping</td>
+                    <td>T-shirt</td>
+                    <td>$30</td>
+                </tr>
+                <tr>
+                    <td>Floral Pants</td>
+                    <td>$40</td>
+                </tr>
+                <tr>
+                    <td>Christmas Tree</td>
+                    <td>$200</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Groceries</td>
+                    <td>Large Eggs</td>
+                    <td>$5</td>
+                </tr>
+                <tr>
+                    <td>Cabbage</td>
+                    <td>$15</td>
+                </tr>
+                <tr>
+                    <td>Grapes</td>
+                    <td>$5</td>
+                </tr>
+                <tr>
+                    <td>Others</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tbody>
+        </table>
+        <h5>Total: $490</h5>
+        <div class="buttons">
+            <button id="add-transaction">Add Transactions</button>
+            <button id="edit">Edit</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('edit').addEventListener('click', function() {
+            let table = document.querySelector('table tbody');
+            let rows = table.getElementsByTagName('tr');
 
-<div class="container">
-    <h2>Scan Result</h2>
-    <p>Recognized Text:</p>
-    <pre>{{ text }}</pre>
-    <h3>Categorized Expenses:</h3>
-    <ul>
-        <li>Food: {{ categories.Food }}</li>
-        <li>Transport: {{ categories.Transport }}</li>
-        <li>Entertainment: {{ categories.Entertainment }}</li>
-        <li>Shopping: {{ categories.Shopping }}</li>
-        <li>Groceries: {{ categories.Groceries }}</li>
-        <li>Others: {{ categories.Others }}</li>
-    </ul>
-</div>
+            if (this.textContent === 'Edit') {
+                for (let row of rows) {
+                    let cells = row.getElementsByTagName('td');
+                    if (cells.length === 3) {
+                        let amountCell = cells[2];
+                        let currentAmount = amountCell.textContent;
+                        let input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = currentAmount.replace('$', '');
+                        amountCell.textContent = '';
+                        amountCell.appendChild(input);
+                    }
+                }
+                this.textContent = 'Save';
+            } else {
+                let total = 0;
+                for (let row of rows) {
+                    let cells = row.getElementsByTagName('td');
+                    if (cells.length === 3) {
+                        let amountCell = cells[2];
+                        let input = amountCell.querySelector('input');
+                        if (input) {
+                            let newAmount = input.value;
+                            amountCell.textContent = `$${newAmount}`;
+                            total += parseFloat(newAmount);
+                        }
+                    }
+                }
+                document.querySelector('h5').textContent = `Total: $${total}`;
+                this.textContent = 'Edit';
+            }
+        });
+        document.getElementById('add-transaction').addEventListener('click', function() {
+            let transaction = [{
+                category: 'Food',
+                amount: 200
+            }, {
+                category: 'Transport',
+                amount: 10
+            }, {
+                category: 'Entertainment',
+                amount: 80
+            }, {   
+                category: 'Shopping',
+                amount: 100
+            }, {
+                category: 'Groceries',
+                amount: 100
+            }, {
+                category: 'Others',
+                amount: 0
+            }];
+
+            var data = {
+                location: 'scan_results',
+                transaction: transaction
+            };
+             // Send the POST request to the same URL
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = '/home/' + data.id;
+                } else {
+                    alert('Failed to delete user: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+                    
+        });
+    </script>
+</body>
+</html>
 {% endblock %}
-
