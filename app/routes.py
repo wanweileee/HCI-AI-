@@ -250,8 +250,8 @@ def login():
         return redirect(url_for("main.home", ids=id));
     return render_template('login.html')
 
-@main.route('/signup', methods=['GET', 'POST'])
-def signup():
+@main.route('/singpass', methods=['GET', 'POST'])
+def singpass():
     if request.method == 'POST':
         # numofusers = User.query.count()
         # if numofusers > 5:
@@ -264,9 +264,13 @@ def signup():
 
         id = User.query.order_by(User.id.desc()).first().id
         
-        return redirect(url_for("main.home", ids=id));
+        return jsonify({"status": "success", "id": id}), 200
     else:
-        return render_template('signup.html')
+        return render_template('singpass.html')
+
+@main.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
 
 @main.route('/planning/<int:ids>', methods=['GET', 'POST'])
 def planning(ids):

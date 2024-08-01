@@ -1,8 +1,9 @@
 {% block content %}
 <div class="container">
     <h1>Welcome to SaveSmart!</h1>
-    <form action="#" method="post">
-        <button class="button">Link to sgfindex</button>
+    <p>Link with SGFinDex via SingPass to securely connect and manage your accounts across various banks seamlessly</p>
+    <form action="/singpass" method="get">
+        <button class="button">Link to SGFinDex</button>
     </form>
 </div>
 {% endblock %}
@@ -29,13 +30,17 @@ h1 {
     font-size: 90px;  /* Increased font size for the heading */
 }
 
+p {
+    font-size: 30px;  /* Increased font size for the paragraph text */
+}
+
 .button {
     display: inline-block;
     background-color: #555;
     color: white;
     padding: 20px 30px;  /* Increased padding for a larger button */
     text-decoration: none;
-    font-size: 70px;  /* Increased font size for the button text */
+    font-size: 50px;  /* Increased font size for the button text */
     border-radius: 8px;  /* Slightly larger border radius for aesthetics */
     transition: background-color 0.3s;
 }
