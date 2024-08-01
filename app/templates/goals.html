@@ -8,139 +8,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goals/Payments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="../static/goals.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='goals.css') }}">
 </head>
 <body>
-
-<div class="container">
+<div class="container goals-box">
     <h2>Goals</h2>
-    <button id="openModalButton" class="button-large"><i class="fa-solid fa-plus"></i>Goal</button>
-    <h3>Goals List</h3>
-    <ul id="goalsList"></ul>
+    <button id="openAddGoalModalButton" class="button-large"><i class="fa-solid fa-plus"></i> Goal</button>
+    <div class="goals-list-box">
+        <h3>Goals List</h3>
+        <ul id="goalsList"></ul>
+    </div>
 </div>
 
-<!-- The Modal -->
+<!-- The Modal for Adding a New Goal -->
 <div id="addGoalModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <label for="goalType">Type:</label>
-    <select id="goalType" name="goalType" onchange="toggleCustomInput(this.value)">
-        <option value="Goal">Goal</option>
-        <option value="Planned Payment">Planned Payment</option>
-    </select>
-    
-    <div id="nameField">
-        <label for="goalName">Name:</label>
-        <input type="text" id="goalName" placeholder="Enter name">
+    <div class="modal-content">
+        <span class="close" id="closeAddGoalModal">&times;</span>
+        
+        <h4>Add New Goal</h4>
+        
+        <div id="nameField">
+            <label for="goalName">Name:</label>
+            <input type="text" id="goalName" placeholder="Enter name">
+        </div>
+        
+        <div id="amountField">
+            <label for="goalAmountTotal">Total Amount ($):</label>
+            <input type="number" id="goalAmountTotal" placeholder="Enter total amount">
+        </div>
+
+        <div id="currentAmountField">
+            <label for="goalAmountCurrent">Current Amount ($):</label>
+            <input type="number" id="goalAmountCurrent" placeholder="Enter current amount">
+        </div>
+        
+        <button onclick="addGoal()" class="button-large">Save Goal</button>
     </div>
-    
-    <div id="amountField">
-        <label for="goalAmount">Amount in $:</label>
-        <input type="number" id="goalAmount" placeholder="Enter amount">
-    </div>
-    
-    <div id="dateField" class="hidden">
-        <label for="goalDate">Date:</label>
-        <input type="date" id="goalDate">
-    </div>
-    
-    <div id="recurringField" class="hidden">
-        <label for="goalRecurring">Recurring:</label>
-        <select id="goalRecurring">
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-        </select>
-    </div>
-    <div id="accountField" class="hidden">
-        <label for="goalAccount">Account:</label>
-        <input type="text" id="goalAccount" placeholder="Enter account number">
-    </div>
-    
-    <button onclick="addGoal()" class="button-large">Add Goal/Payment</button>
-  </div>
 </div>
 
 <script>
-    // Get modal element
-    const modal = document.getElementById("addGoalModal");
-    const openModalButton = document.getElementById("openModalButton");
-    const closeModalButton = document.getElementsByClassName("close")[0];
+    // Get modal elements
+    const addGoalModal = document.getElementById("addGoalModal");
+    const openAddGoalModalButton = document.getElementById("openAddGoalModalButton");
+    const closeAddGoalModal = document.getElementById("closeAddGoalModal");
 
-    // Open modal
-    openModalButton.onclick = function() {
-        modal.style.display = "block";
+    // Open modal for adding a new goal
+    openAddGoalModalButton.onclick = function() {
+        addGoalModal.style.display = "block";
     }
 
-    // Close modal
-    closeModalButton.onclick = function() {
-        modal.style.display = "none";
+    // Close modal for adding a new goal
+    closeAddGoalModal.onclick = function() {
+        addGoalModal.style.display = "none";
     }
 
-    // Close modal if user clicks outside of it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    // Close modals if user clicks outside of them
+    window.addEventListener("click", function(event) {
+        if (event.target === addGoalModal) {
+            addGoalModal.style.display = "none";
         }
-    }
+    });
 
-    // Toggle custom input fields based on goal type
-    function toggleCustomInput(value) {
-        const dateField = document.getElementById("dateField");
-        const recurringField = document.getElementById("recurringField");
-        const accountField = document.getElementById("accountField");
-
-        if (value === "Planned Payment") {
-            dateField.classList.remove("hidden");
-            recurringField.classList.remove("hidden");
-            accountField.classList.remove("hidden");
-        } else {
-            dateField.classList.add("hidden");
-            recurringField.classList.add("hidden");
-            accountField.classList.add("hidden");
-        }
-    }
-
-    // Function to add a new goal/payment to the list
+    // Function to add a new goal to the list
     function addGoal() {
         // Get input values
-        const goalType = document.getElementById('goalType').value;
         const goalName = document.getElementById('goalName').value;
-        const goalAmount = document.getElementById('goalAmount').value;
-        const goalDate = document.getElementById('goalDate').value;
-        const goalRecurring = document.getElementById('goalRecurring').value;
-        const goalAccount = document.getElementById('goalAccount').value;
+        const goalAmountTotal = parseFloat(document.getElementById('goalAmountTotal').value);
+        const goalAmountCurrent = parseFloat(document.getElementById('goalAmountCurrent').value);
 
-        // Validate input based on goal type
-        if (goalType === 'Planned Payment' && (goalName === '' || goalAmount === '' || goalDate === '' || goalRecurring === '' || goalAccount === '')) {
-            alert('Please fill in all fields.');
-            return;
-        } else if (goalType === 'Goal' && (goalName === '' || goalAmount === '')) {
-            alert('Please fill in all fields.');
+        // Validate input
+        if (goalName === '' || isNaN(goalAmountTotal) || isNaN(goalAmountCurrent)) {
+            alert('Please fill in all fields with valid numbers.');
             return;
         }
 
-        // Create additional info for Planned Payment type
-        let additionalInfo = '';
-        if (goalType === 'Planned Payment') {
-            additionalInfo = `Date: ${goalDate}, Recurring: ${goalRecurring}, Account: ${goalAccount}`;
-        }
+        // Calculate progress percentage
+        const progress = (goalAmountCurrent / goalAmountTotal) * 100;
 
         // Create a new list item
         const li = document.createElement('li');
         li.innerHTML = `
-            ${goalName} - $${goalAmount}
-            <button class="edit-button button-small" onclick="editGoal(this)"><i class="fas fa-pencil-alt"></i></button>
-            <button class="remove-button button-small" onclick="removeGoal(this)"><i class="fas fa-trash"></i></button>
-            <div class="progress-bar-container">
-                <div class="progress-bar" style="width: 0;"></div>
-                <span class="progress-text">0%</span>
+            <div class="goal-header">
+                <strong>${goalName}</strong>
+                <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progress}%;"></div>
+                </div>
+                <i class="fas fa-chevron-down" onclick="toggleGoalDetails(this)"></i>
             </div>
-            <div class="update-container">
-                <input type="text" class="update-name">
-                <button class="button-small" onclick="updateGoal(this)">Update</button>
+            <div class="goal-details" style="display: none;">
+                <div class="goal-info">
+                    <div class="input-group">
+                        <label>Total:</label>
+                        <input type="number" class="edit-goal-amount-total" value="${goalAmountTotal}" disabled onchange="updateGoal(this)">
+                    </div>
+                    <div class="input-group">
+                        <label>Current:</label>
+                        <input type="number" class="edit-goal-amount-current" value="${goalAmountCurrent}" disabled onchange="updateGoal(this)">
+                    </div>
+                </div>
+                <div class="goal-actions">
+                    <button class="remove-button button-small" onclick="removeGoal(this)"><i class="fas fa-trash"></i></button>
+                </div>
             </div>
-            <div>${additionalInfo}</div>
         `;
 
         // Append new item to goals list
@@ -149,43 +118,57 @@
 
         // Clear input fields
         document.getElementById('goalName').value = '';
-        document.getElementById('goalAmount').value = '';
-        document.getElementById('goalDate').value = '';
-        document.getElementById('goalRecurring').value = 'weekly';
-        document.getElementById('goalAccount').value = '';
+        document.getElementById('goalAmountTotal').value = '';
+        document.getElementById('goalAmountCurrent').value = '';
 
         // Close modal
-        modal.style.display = "none";
+        addGoalModal.style.display = "none";
     }
 
-    // Function to edit a goal/payment
-    function editGoal(button) {
-        const li = button.parentElement;
-        const updateContainer = li.querySelector('.update-container');
-        const nameInput = updateContainer.querySelector('.update-name');
-        const name = li.firstChild.textContent.trim();
-        nameInput.value = name;
-        updateContainer.style.display = 'block';
-    }
+    // Function to toggle goal details (expand/collapse)
+    function toggleGoalDetails(chevronIcon) {
+        const goalDetails = chevronIcon.parentElement.nextElementSibling;
+        const isExpanded = goalDetails.style.display === 'block';
+        goalDetails.style.display = isExpanded ? 'none' : 'block';
+        chevronIcon.classList.toggle('fa-chevron-down', isExpanded);
+        chevronIcon.classList.toggle('fa-chevron-up', !isExpanded);
 
-    // Function to update a goal/payment
-    function updateGoal(button) {
-        const li = button.parentElement.parentElement;
-        const nameInput = li.querySelector('.update-name');
-        const newName = nameInput.value.trim();
-        li.firstChild.textContent = newName;
-        const updateContainer = li.querySelector('.update-container');
-        updateContainer.style.display = 'none';
+        if (!isExpanded) {
+            // When expanded, make fields editable
+            const editFields = goalDetails.querySelectorAll('.edit-goal-amount-total, .edit-goal-amount-current');
+            editFields.forEach(field => field.removeAttribute('disabled'));
+        } else {
+            // When collapsed, disable fields
+            const editFields = goalDetails.querySelectorAll('.edit-goal-amount-total, .edit-goal-amount-current');
+            editFields.forEach(field => field.setAttribute('disabled', true));
+        }
     }
+    // Function to update the progress bar and other details when values are changed
+    function updateGoal(input) {
+        const goalDetails = input.closest('.goal-details');
+        const goalHeader = goalDetails.previousElementSibling;
+        
+        // Get updated values
+        const totalAmount = parseFloat(goalDetails.querySelector('.edit-goal-amount-total').value);
+        const currentAmount = parseFloat(goalDetails.querySelector('.edit-goal-amount-current').value);
 
-    // Function to remove a goal/payment
+        if (isNaN(totalAmount) || isNaN(currentAmount)) {
+            alert('Please enter valid numbers.');
+            return;
+        }
+
+        // Update the progress bar
+        const progress = (currentAmount / totalAmount) * 100;
+        const progressBar = goalHeader.querySelector('.progress-bar');
+        progressBar.style.width = `${progress}%`;
+    }    
+
+    // Function to remove a goal
     function removeGoal(button) {
-        const li = button.parentElement;
-        const goalsList = document.getElementById('goalsList');
-        goalsList.removeChild(li);
+        const goalToRemove = button.closest('li');
+        goalToRemove.remove();
     }
-</script>
+</script>   
 
 </body>
-{% endblock content %}
-
+{% endblock %}
