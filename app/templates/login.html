@@ -6,24 +6,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <title>SaveSmart - Log In</title>
     <style>
-        .button-style {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            color: #fff;
-            background-color: #252525;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+        button.button-style {
+        display: inline-block;
+        padding: 10px 150px;
+        margin: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: #252525;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
         }
 
-        .button-style:hover {
-            background-color: #111921;
+        button.button-style:hover  {
+        background-color: #111921; 
         }
 
         body {
@@ -78,7 +77,6 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin: 10px 0;
         }
 
         .login-container button:hover {
@@ -110,32 +108,6 @@
         .login-container a:hover {
             color: #fff;
         }
-
-        .singpass-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .singpass-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .sgfindex-info {
-            font-size: 0.9rem;
-            color: #bbb;
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -149,15 +121,11 @@
             <input type="password" id="password" name="password" required>
 
             <a href="#" class="forgot-password">Forget Password?</a>
-
-            <button type="submit" class="button-style">Login</button>
+            
+            <p><button class="button-style">Login</button></p>
         </form>
         
-        <p>Or</p>
-        
-        <form action="/signup" method="get">
-            <button type="submit" class="singpass-btn">Sign Up</button>
-        </form>
+        <p>Don’t have an account? <a href="/signup">Sign Up</a></p>
     </div>
 </body>
 </html>

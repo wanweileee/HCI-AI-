@@ -9,103 +9,179 @@
         body {
             margin: 0;
             font-family: "Inter", sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             background-color: #f7f7f7;
         }
 
-        .header {
+        .container {
             width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
             background-color: #ffffff;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 0px;
+            text-align: left;
+            color: #ffffff;
         }
 
         .header img {
-            height: 40px;
-        }
-
-        .header .menu {
-            font-size: 24px;
-            cursor: pointer;
+            height: 50px;
+            width: 100px;
         }
 
         .content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
             text-align: center;
         }
 
-        .content h1 {
-            font-size: 1.5rem;
+        .warning {
+            background-color: #fff4e5;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .warning p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .dropdown {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-content {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .login-title {
             margin: 20px 0;
         }
 
-        .content p {
+        .login-methods {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .login-method {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #d32f2f;
+            border-bottom: 2px solid #d32f2f;
+        }
+
+        .login-method.inactive {
             color: #666;
-            margin: 10px 0;
+            border-bottom: 2px solid transparent;
         }
 
         .qr-code {
-            border: 2px solid #ff0000;
-            border-radius: 10px;
+            
+            margin: 20px 0;
             padding: 20px;
             background-color: #ffffff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: 20px 0;
+            border-radius: 10px;
         }
 
         .qr-code img {
             width: 200px;
             height: 200px;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
         }
 
         .footer {
-            padding: 20px;
             text-align: center;
-            font-size: 0.9rem;
+            padding: 20px;
         }
 
         .footer a {
+            display: block;
             color: #007bff;
             text-decoration: none;
+            margin: 10px 0;
         }
 
         .footer a:hover {
             text-decoration: underline;
         }
+
+        .bottom-bar {
+            background-color: #d32f2f;
+            padding: 10px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="./static/image/singpass-logo.png" alt="Singpass Logo">
-        <div class="menu">&#9776;</div>
-    </div>
-    <div class="content">
-        <h1>Login to Singpass</h1>
-        <p>Your trusted digital identity</p>
-        <div class="qr-code">
-            <!-- <a href="https://singpass.example.com/approve-login" target="_blank">
-                <img src="./static/image/qr-code.jpg" alt="Singpass QR Code">
-            </a> -->
-            <img src="./static/image/qr-code.jpg" alt="Singpass QR Code" style="cursor:pointer;" onclick="login()">
+    <div class="container">
+        <div class="header">
+            <img src="./static/image/singpass-logo.png" alt="Singpass Logo">
         </div>
-        <p>Tap QR code to log in with Singpass app</p>
+        <div class="content">
+            <div class="warning">
+                <div class="dropdown" onclick="toggleDropdown()">
+                    <p><strong>Beware of account takeovers</strong></p>
+                    <span>&#9660;</span>
+                </div>
+                <div class="dropdown-content" id="dropdownContent">
+                    <p>Scammers may manipulate victims to change their Singpass contact details, e.g. email and mobile number. This allows the scammers to receive the victim's One-Time Passwords or take over the Singpass account to commit crimes. If you suspect your account has been compromised, call the Singpass hotline.</p>
+                </div>
+            </div>
+            <div class="login-title">
+                <h1>Log in with Singpass</h1>
+                <p>Your trusted digital identity</p>
+            </div>
+            <div class="login-methods">
+                <div class="login-method">Singpass app</div>
+                <div class="login-method inactive">Password login</div>
+            </div>
+            <div class="qr-code">
+                <p><strong>Tap QR code</strong> to log in with Singpass app</p>
+                <img src="./static/image/qr-code.png" alt="Singpass QR Code" onclick="redirectToApprovalPage()">
+            </div>
+        </div>
+        <div class="footer">
+            <a href="https://example.com/register">Register for Singpass</a>
+            <a href="https://example.com/download">Download Singpass app</a>
+        </div>
     </div>
-    <div class="footer">
-        <p>Don't have Singpass app? <a href="https://example.com/download">Download now</a></p>
+    <div class="bottom-bar">
+        singpass
     </div>
+    <script>
+        function toggleDropdown() {
+            var dropdownContent = document.getElementById("dropdownContent");
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        }
+
+        function redirectToApprovalPage() {
+            window.location.href = '/approval';
+        }
+    </script>
 </body>
-<script>
-    function login() {
-        var data = {
+</html>
+
+<!-- <script>
+    var data = {
             message: 'User requested to log in with Singpass'
         };
         fetch(window.location.href, {
@@ -126,6 +202,4 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-    }
-</script>
-</html>
+</script> -->

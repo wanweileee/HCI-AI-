@@ -272,6 +272,10 @@ def singpass():
 def signup():
     return render_template('signup.html')
 
+@main.route('/approval', methods=['GET', 'POST'])
+def approval():
+    return render_template('approval.html')
+
 @main.route('/planning/<int:ids>', methods=['GET', 'POST'])
 def planning(ids):
     if request.method == 'POST':
