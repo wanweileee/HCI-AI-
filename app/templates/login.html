@@ -7,25 +7,26 @@
     <title>SaveSmart - Log In</title>
     <style>
         .button-style {
-        display: inline-block;
-        padding: 10px 150px;
-        margin: 10px;
-        font-size: 16px;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        color: #fff;
-        background-color: #252525;
-        border: none;
-        border-radius: 5px;
-        transition: background-color 0.3s;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #252525;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
         .button-style:hover {
-        background-color: #111921; 
+            background-color: #111921;
         }
 
-    body {
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -77,6 +78,7 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin: 10px 0;
         }
 
         .login-container button:hover {
@@ -108,12 +110,38 @@
         .login-container a:hover {
             color: #fff;
         }
+
+        .singpass-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .singpass-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .sgfindex-info {
+            font-size: 0.9rem;
+            color: #bbb;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h1>SaveSmart</h1>
-        <form action="/" method="post">
+        <form action="/login" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
@@ -121,10 +149,19 @@
             <input type="password" id="password" name="password" required>
 
             <a href="#" class="forgot-password">Forget Password?</a>
-            
-            <p><a href="/" class="button-style">Login</a></p>
+
+            <button type="submit" class="button-style">Login</button>
+        </form>
         
-        <p>Don’t have an account? <a href="/signup">Sign Up</a></p>
+        <p>Or</p>
+        
+        <div class="sgfindex-info">
+            <p>Link with SGFinDex via SingPass to securely connect and manage your accounts across various banks seamlessly</p>
+        </div>
+        
+        <form action="/signup" method="get">
+            <button type="submit" class="singpass-btn">Sign Up with SingPass</button>
+        </form>
     </div>
 </body>
 </html>

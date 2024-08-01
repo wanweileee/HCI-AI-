@@ -1,12 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-import pytesseract
-from PIL import Image
-import os
-from transformers import pipeline
-
-classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Tan Zi Hui\Documents\GitHub\HCI-AI-\tesseract.exe'  # Adjust the path if needed
 
 main = Blueprint('main', __name__)
 
@@ -31,13 +23,16 @@ def settings():
 def add():
     return render_template('add.html')
 
-@main.route('/login')
+@main.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        # Handle login logic here
+        return redirect(url_for('main.home'))
     return render_template('login.html')
 
 @main.route('/signup')
 def signup():
-    return render_template('signup.html')
+    return render_template('after-signup.html')
 
 @main.route('/planning')
 def planning():
@@ -105,4 +100,3 @@ def categorize_expenses(text):
                 print(f"Error processing line: {line}. Error: {e}")
                 categories['Others'].append(line)
     return categories
-

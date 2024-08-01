@@ -1,45 +1,105 @@
-{% block content %}
-<div class="container">
-    <h1>Welcome to SaveSmart!</h1>
-    <a href="/" class="button">Link to sgfindex</a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Singpass Login</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f7f7f7;
+        }
 
-<style>
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #333;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .header {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.container {
-    text-align: center;
-    width: 80%;
-}
+        .header img {
+            height: 40px;
+        }
 
-h1 {
-    margin-bottom: 20px;
-    font-size: 90px;  /* Increased font size for the heading */
-}
+        .header .menu {
+            font-size: 24px;
+            cursor: pointer;
+        }
 
-.button {
-    display: inline-block;
-    background-color: #555;
-    color: white;
-    padding: 20px 30px;  /* Increased padding for a larger button */
-    text-decoration: none;
-    font-size: 70px;  /* Increased font size for the button text */
-    border-radius: 8px;  /* Slightly larger border radius for aesthetics */
-    transition: background-color 0.3s;
-}
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
 
-.button:hover {
-    background-color: #777;
-}
+        .content h1 {
+            font-size: 1.5rem;
+            margin: 20px 0;
+        }
 
-</style>
+        .content p {
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .qr-code {
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        .qr-code img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="static/image/singpass-logo.png" alt="Singpass Logo">
+        <div class="menu">&#9776;</div>
+    </div>
+    <div class="content">
+        <h1>Login to Singpass</h1>
+        <p>Your trusted digital identity</p>
+        <div class="qr-code">
+            <a href="https://singpass.example.com/approve-login" target="_blank">
+                <img src="static/image/qr-code.jpg" alt="Singpass QR Code">
+            </a>
+        </div>
+        <p>Tap QR code to log in with Singpass app</p>
+    </div>
+    <div class="footer">
+        <p>Don't have Singpass app? <a href="https://example.com/download">Download now</a></p>
+    </div>
+</body>
+</html>
