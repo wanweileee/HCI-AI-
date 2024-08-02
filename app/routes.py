@@ -9,9 +9,9 @@ from .models import *
 from sqlalchemy import distinct
 import datetime
 
-classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
+# classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli')
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\fawzi\Desktop\TERM 5\60.005 HCI and AI\HCI-AI-\tesseract.exe'  # Adjust the path if needed
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Users\fawzi\Desktop\TERM 5\60.005 HCI and AI\HCI-AI-\tesseract.exe'  # Adjust the path if needed
 
 main = Blueprint('main', __name__)
 
