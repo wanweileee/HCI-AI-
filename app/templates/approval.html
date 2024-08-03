@@ -169,22 +169,36 @@
         </div>
         <div class="buttons">
             <button class="reject">Reject</button>
-            <button class="approve" onclick="toHome()">Approve</button>
+            <button class="approve" onclick="approveLogin()">Approve</button>
         </div>
         <div class="footer">
             02 Aug 2024, 3:27 am
         </div>
     </div>
     <script>
-        function toHome() {
-            window.location.href = "/";
+        function approveLogin() {
+            var data = {
+                message: 'User requested to log in with Singpass'
+            };
+            fetch('/singpass', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = '/home/' + data.id;
+                } else {
+                    alert('Failed to log in: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
     </script>
 </body>
 </html>
-
-<script>
-    function toHome() {
-        window.location.href = "/";
-    }
-</script>
