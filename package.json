@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel templates/homepage.html",
-    "build": "parcel build templates/homepage.html"
+    "dev": "parcel app/templates/login.html",
+    "build": "parcel build app/templates/login.html"
   },
   "devDependencies": {
     "parcel": "^2.6.2"
