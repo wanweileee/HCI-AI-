@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel src/homepage.html",
-    "build": "parcel build src/homepage.html"
+    "dev": "parcel templates/homepage.html",
+    "build": "parcel build templates/homepage.html"
   },
   "devDependencies": {
-    "parcel": "^2.6.2" 
+    "parcel": "^2.6.2"
   },
   "dependencies": {
     "@cubejs-client/core": "^0.31.0",
